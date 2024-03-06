@@ -41,6 +41,7 @@ public class BoardService {
                 .name(board.getName())
                 .subject(board.getSubject())
                 .content(board.getContent())
+                .hitCount(board.getHitCount())
                 .createdDate(board.getCreatedDate())
                 .updatedDate(board.getUpdatedDate())
                 .build();

@@ -35,8 +35,8 @@ public class BoardController {
     // 상세 보기
     @GetMapping("/list/{id}")
     public String detail(@PathVariable("id") int num, Model model) {
-        BoardDto boardDto = boardService.getBoard(num);
         boardService.increaseHitCount(num);
+        BoardDto boardDto = boardService.getBoard(num);
         model.addAttribute("board", boardDto);
         return "article";
     }

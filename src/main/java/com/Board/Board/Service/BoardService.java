@@ -5,6 +5,7 @@ import com.Board.Board.Domain.Repository.BoardRepository;
 import com.Board.Board.Dto.BoardDto;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -13,7 +14,7 @@ import java.util.List;
 @Service
 public class BoardService {
     private BoardRepository boardRepository;
-
+    @Autowired
     public BoardService(BoardRepository boardRepository){
         this.boardRepository = boardRepository;
     }

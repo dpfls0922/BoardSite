@@ -5,12 +5,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
+@DynamicInsert
+@DynamicUpdate
+@EntityListeners(AuditingEntityListener.class)
 public class Board {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -23,13 +32,13 @@ public class Board {
     @Column(nullable = false)
     private Integer hitcount = 0;
 
-    @Column(name = "created")
+    @CreatedDate
+    @Column(name = "created", updatable = false)
     private LocalDateTime createdDate;
+    @LastModifiedDate
+    @Column(name = "updated")
+    private LocalDateTime updatedDate;
 
-    @PrePersist
-    public void createDate(){
-        this.createdDate = LocalDateTime.now();
-    }
     @Builder
     public Board(Integer num, String name, String email, String subject, String content) {
         this.num = num;

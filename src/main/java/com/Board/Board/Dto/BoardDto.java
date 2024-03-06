@@ -16,8 +16,9 @@ public class BoardDto {
     private String email;
     private String subject;
     private String content;
-    private LocalDateTime createdDate;
     private int hitCount;
+    private LocalDateTime createdDate;
+    private LocalDateTime updatedDate;
 
     public Board toEntity() {
         Board build = Board.builder()
@@ -32,12 +33,13 @@ public class BoardDto {
         return build;
     }
     @Builder
-    public BoardDto(int num, String name, String email, String subject, String content, LocalDateTime createdDate) {
+    public BoardDto(int num, String name, String email, String subject, String content, LocalDateTime createdDate, LocalDateTime updatedDate) {
         this.num = num;
         this.name = name;
         this.email = email;
         this.subject = subject;
         this.content = content;
         this.createdDate = createdDate;
+        this.updatedDate = updatedDate;
     }
 }

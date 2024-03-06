@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-@Transactional
 public class BoardService {
     private BoardRepository boardRepository;
 
@@ -22,13 +21,33 @@ public class BoardService {
     public Integer savePost(BoardDto boardDto){
         return boardRepository.save(boardDto.toEntity()).getNum();
     }
-
+    @Transactional
     public List<Board> getAllBoards() {
         return boardRepository.findAll();
     }
+    @Transactional
     public List<Board> getAllBoardsReversed() {
         List<Board> boards = boardRepository.findAll();
         Collections.reverse(boards);
         return boards;
+    }
+    @Transactional
+    public BoardDto  getBoard(int num) {
+        Board board = boardRepository.findById(num).get();
+
+        BoardDto boardDto = BoardDto.builder()
+                .num(board.getNum())
+                .name(board.getName())
+                .subject(board.getSubject())
+                .content(board.getContent())
+                .createdDate(board.getCreatedDate())
+                .updatedDate(board.getUpdatedDate())
+                .build();
+        return boardDto;
+    }
+
+    @Transactional
+    public void deletePost(int num) {
+        boardRepository.deleteById(num);
     }
 }

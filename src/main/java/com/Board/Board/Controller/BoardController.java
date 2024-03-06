@@ -36,6 +36,7 @@ public class BoardController {
     @GetMapping("/list/{id}")
     public String detail(@PathVariable("id") int num, Model model) {
         BoardDto boardDto = boardService.getBoard(num);
+        boardService.increaseHitCount(num);
         model.addAttribute("board", boardDto);
         return "article";
     }
@@ -61,7 +62,7 @@ public class BoardController {
     }
 
     @PutMapping("/list/edit/{id}")
-    public String update(@PathVariable("id") int num, @ModelAttribute BoardDto boardDto) {
+    public String edit(@PathVariable("id") int num, @ModelAttribute BoardDto boardDto) {
         boardDto.setNum(num);
         boardService.savePost(boardDto);
         return "redirect:/list/{id}";

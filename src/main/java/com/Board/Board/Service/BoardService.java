@@ -3,6 +3,7 @@ package com.Board.Board.Service;
 import com.Board.Board.Domain.Entity.Board;
 import com.Board.Board.Domain.Repository.BoardRepository;
 import com.Board.Board.Dto.BoardDto;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +45,12 @@ public class BoardService {
                 .updatedDate(board.getUpdatedDate())
                 .build();
         return boardDto;
+    }
+    @Transactional
+    public void increaseHitCount(int num) {
+        Board board = boardRepository.findById(num).orElseThrow(() -> new EntityNotFoundException("Board not found with num: " + num));
+        board.setHitcount(board.getHitCount() + 1);
+        boardRepository.save(board);
     }
 
     @Transactional

@@ -1,6 +1,7 @@
 package com.Board.Board.Controller;
 
 import com.Board.Board.Domain.Entity.Board;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import com.Board.Board.Dto.BoardDto;
 import com.Board.Board.Service.BoardService;
@@ -14,7 +15,7 @@ import org.slf4j.LoggerFactory;
 @Controller
 public class BoardController {
     private static final Logger logger = LoggerFactory.getLogger(BoardController.class);
-
+    @Autowired
     private BoardService boardService;
 
     public BoardController(BoardService boardService){

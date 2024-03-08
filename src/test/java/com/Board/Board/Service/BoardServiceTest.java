@@ -78,7 +78,9 @@ class BoardServiceTest {
     @DisplayName("모든 게시글 역순으로 불러오기")
     void getAllBoardsReversed() {
         Board board1 = new Board();
-        Board board2 = new Board();
+        Board board2 = new Board();;
+        board1.setNum(1);
+        board2.setNum(2);
 
         when(boardRepository.findAll()).thenReturn(Arrays.asList(board1, board2));
 
@@ -86,10 +88,8 @@ class BoardServiceTest {
 
         assertNotNull(reversedBoards, "게시물 목록은 null이 아니어야 합니다.");
         assertEquals(2, reversedBoards.size());
-
-        // 검증: 역순으로 반환되었는지 확인
-        assert reversedBoards.get(0) == board2;
-        assert reversedBoards.get(1) == board1;
+        assertEquals(board2, reversedBoards.get(0), "첫 번째 게시물이 일치하지 않습니다.");
+        assertEquals(board1, reversedBoards.get(1), "두 번째 게시물이 일치하지 않습니다.");
     }
 
     @Test

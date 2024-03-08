@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BoardService {
@@ -35,8 +36,12 @@ public class BoardService {
     }
     @Transactional
     public BoardDto  getBoard(int num) {
-        Board board = boardRepository.findById(num).get();
+        Optional<Board> optionalBoard = boardRepository.findById(num);
+        if (optionalBoard.isEmpty()) {
+            throw new EntityNotFoundException("Board not found with ID: " + num);
+        }
 
+        Board board = optionalBoard.get();
         BoardDto boardDto = BoardDto.builder()
                 .num(board.getNum())
                 .name(board.getName())

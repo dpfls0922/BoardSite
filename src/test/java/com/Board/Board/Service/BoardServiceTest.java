@@ -114,7 +114,7 @@ class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("조회수 증가 테스트")
+    @DisplayName("조회수 증가")
     void increaseHitCount() {
         int boardId = 1;
         Board board = new Board();
@@ -130,7 +130,7 @@ class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("게시글 삭제 테스트")
+    @DisplayName("게시글 삭제하기")
     void deletePost() {
         int boardId = 1;
 

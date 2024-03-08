@@ -1,11 +1,11 @@
 package com.Board.Board.Dto;
 
 import com.Board.Board.Domain.Entity.Board;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DisplayName("DTO 생성 테스트")
 class BoardDtoTest {

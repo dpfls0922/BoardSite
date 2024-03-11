@@ -31,8 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class BoardControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;   // 서블릿 컨테니어 사용 x, 테스트용으로 Mvc 기능 사용할 수 있음
-
+    private MockMvc mockMvc;   // 서블릿 컨테이너 사용 x
+                               // 테스트용으로 Mvc 기능 사용할 수 있음
     @MockBean
     BoardService boardService; // 협력자
 
@@ -48,7 +48,7 @@ class BoardControllerTest {
 
     @Test
     @DisplayName("목록 불러오기")
-    void list() throws Exception {
+    void listTest() throws Exception {
         when(boardService.getAllBoardsReversed()).thenReturn(dummyBoards);
 
         mockMvc.perform(get("/list"))
@@ -59,7 +59,7 @@ class BoardControllerTest {
 
     @Test
     @DisplayName("글 상세보기")
-    void detail() throws Exception {
+    void detailTest() throws Exception {
         int boardId = 1;
         BoardDto boardDto = new BoardDto();
         when(boardService.getBoard(boardId)).thenReturn(boardDto);
@@ -73,7 +73,7 @@ class BoardControllerTest {
 
     @Nested
     @DisplayName("글 등록하기")
-    class register {
+    class registerTest {
         @Test
         @DisplayName("Get")
         void registerGet() throws Exception {
@@ -98,7 +98,7 @@ class BoardControllerTest {
 
     @Nested
     @DisplayName("글 수정하기")
-    class edit {
+    class editTest {
         @DisplayName("Get")
         @Test
         void editGet() throws Exception {
@@ -130,7 +130,7 @@ class BoardControllerTest {
 
     @Test
     @DisplayName("글 삭제하기")
-    void deleteBoard() throws Exception {
+    void deleteBoardTest() throws Exception {
         int boardId = 1;
         mockMvc.perform(delete("/list/{id]}", boardId))
                 .andExpect(status().is3xxRedirection())

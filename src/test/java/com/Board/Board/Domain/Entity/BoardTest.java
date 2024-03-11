@@ -48,6 +48,7 @@ class BoardTest {
         // then
         assertEquals(board1, board2);  // 객체의 내부 데이터나 상태가 동일
         assertEquals(board1.hashCode(), board2.hashCode());  // 동등한 객체는 동일한 해시 코드를 가짐
+        assertEquals(board1.hashCode(), board2.hashCode());  // 동등한 객체는 동일한 해시 코드를 가짐
         // 그러나 해시 코드가 같다고 두 객체가 반드시 동일하지 않음 -> 해쉬 충돌 현상
     }
 

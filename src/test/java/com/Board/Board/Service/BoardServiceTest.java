@@ -35,13 +35,12 @@ class BoardServiceTest {
     @DisplayName("글 생성하기")
     void savePostTest() {
         // given
-        // 테스트 데이터 생성
         BoardDto boardDto = new BoardDto();
         boardDto.setNum(1);
         boardDto.setName("yerin");
         boardDto.setSubject("title");
         boardDto.setContent("content");
-        // 가짜 객체 생성 (실제 DB에 저장 안됨)
+
         Board boardEntity = Board.builder()
                 .num(boardDto.getNum())
                 .name(boardDto.getName())
@@ -57,7 +56,8 @@ class BoardServiceTest {
         assertEquals(boardEntity.getName(), boardDto.getName());
         assertEquals(boardEntity.getSubject(), boardDto.getSubject());
         assertEquals(1, savedBoardNum);
-        assertNotNull(savedBoardNum, "게시물 번호는 null이 아니어야 합니다."); // 실제로 디비에 저장되지 않기 때문에 setNum 하지 않으면 num은 null 값을 가짐
+        assertNotNull(savedBoardNum, "게시물 번호는 null이 아니어야 합니다.");
+        // 실제로 디비에 저장되지 않기 때문에 setNum 하지 않으면 num은 null 값을 가짐
     }
 
     @Test

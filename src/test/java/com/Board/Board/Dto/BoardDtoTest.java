@@ -1,11 +1,11 @@
 package com.Board.Board.Dto;
 
 import com.Board.Board.Domain.Entity.Board;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("DTO 생성 테스트")
 class BoardDtoTest {
@@ -26,6 +26,7 @@ class BoardDtoTest {
         Board board = boardDto.toEntity();
 
         // then
+        assertEquals("com.Board.Board.Domain.Entity.Board", board.getClass().getName()); // 속한 클래스 확인
         assertNotNull(board);
         assertEquals(boardDto.getNum(), board.getNum());
         assertEquals(boardDto.getName(), board.getName());
@@ -45,7 +46,6 @@ class BoardDtoTest {
         String subject = "제목";
         String content = "내용";
         int hitCount = 0;
-
         // when
         BoardDto boardDto = BoardDto.builder()
                 .num(num)
@@ -55,8 +55,8 @@ class BoardDtoTest {
                 .content(content)
                 .hitCount(hitCount)
                 .build();
-
         // then
+        assertEquals("com.Board.Board.Dto.BoardDto", boardDto.getClass().getName()); // 속한 클래스 확인
         assertNotNull(boardDto);
         assertEquals(num, boardDto.getNum());
         assertEquals(name, boardDto.getName());

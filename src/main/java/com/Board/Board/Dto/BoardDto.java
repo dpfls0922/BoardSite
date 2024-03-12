@@ -33,7 +33,8 @@ public class BoardDto {
         return build;
     }
     @Builder
-    public BoardDto(int num, String name, String email, String subject, String content, int hitCount, LocalDateTime createdDate, LocalDateTime updatedDate) {
+    public BoardDto(int num, String name, String email, String subject, String content,
+                    int hitCount, LocalDateTime createdDate, LocalDateTime updatedDate) {
         this.num = num;
         this.name = name;
         this.email = email;

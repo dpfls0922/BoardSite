@@ -4,7 +4,6 @@
 <%@ page import="org.slf4j.LoggerFactory" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page contentType="text/html; charset=UTF-8"%>
-
 <%
     request.setCharacterEncoding("UTF-8");
     // 로깅 확인
@@ -26,6 +25,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
+
 <div>
     <nav class="navbar bg-body-tertiary">
         <div class="container-fluid">
@@ -50,7 +50,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <%for(Board board : boards){ %>
+                    <%for(Board board : boards) { %>
                         <tr>
                             <td><%=board.getNum() %></td>
                             <td>

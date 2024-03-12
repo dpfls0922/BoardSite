@@ -8,6 +8,7 @@
     Logger logger = LoggerFactory.getLogger("article.jsp");
     BoardDto board = (BoardDto) request.getAttribute("board");
     logger.info("Board received in JSP: {}", board);
+    logger.info("Board received in JSP: {}", board.getHitCount());
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 %>
@@ -37,7 +38,7 @@
 
                 <div class="d-flex justify-content-between">
                     <p class="card-text text-muted"> <%=board.getCreatedDate().format(formatter)%></p>
-                    <span class="text-muted">조회수 <%=board.getHitCount() %></span>
+                    <span class="text-muted">조회수 <%=board.getHitCount()%></span>
                 </div>
 
                 <br/>

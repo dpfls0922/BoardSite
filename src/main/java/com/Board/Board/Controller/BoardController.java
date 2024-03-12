@@ -15,9 +15,9 @@ import org.slf4j.LoggerFactory;
 @Controller
 public class BoardController {
     private static final Logger logger = LoggerFactory.getLogger(BoardController.class);
-    @Autowired
-    private BoardService boardService;
 
+    private BoardService boardService;
+    @Autowired
     public BoardController(BoardService boardService){
         this.boardService = boardService;
     }
@@ -25,7 +25,7 @@ public class BoardController {
     // 전체 목록 뷸러오기
     @GetMapping("/list")
     public String list(Model model){
-        // 로깅 확인
+        // 로깅
         List<Board> boards = boardService.getAllBoards();
         for (Board board : boards) {
             logger.info("Board: {}", board);

@@ -40,7 +40,7 @@
                     <a class="btn btn-primary" href="/list/edit/<%=board.getNum() %>" role="button">수정</a>
                 </div>
                 <div class="col-auto">
-                    <form id="delete-form" href="/list/<%=board.getNum() %>" method="post">
+                    <form id="delete-form" action="/list/remove/<%=board.getNum() %>" method="post">
                         <input type="hidden" name="_method" value="delete" />
                         <button id="delete-btn" type="submit" class="btn btn-danger">삭제</button>
                     </form>

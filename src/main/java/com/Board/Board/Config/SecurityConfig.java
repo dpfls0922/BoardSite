@@ -12,7 +12,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import static org.springframework.security.config.Customizer.withDefaults;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -34,7 +33,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/admin").hasRole("ADMIN")
-                        .requestMatchers("/list/edit/**", "/list/remove/**", "/register/**", "/edit/**").authenticated() //.hasRole("MEMBER")
+                        .requestMatchers("/list/edit/**", "/list/remove/**", "/register/**", "/edit/**").hasRole("USER") // .authenticated()
                         .requestMatchers("/**", "/list", "/list/{id}", "/css/**", "/js/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin((formLogin) -> formLogin

@@ -37,7 +37,7 @@ public class BoardService {
     public BoardDto  getBoard(int num) {
         Optional<Board> optionalBoard = boardRepository.findById(num);
         if (optionalBoard.isEmpty()) {
-            throw new EntityNotFoundException("Board not found with ID: " + num);
+            throw new EntityNotFoundException("존재하지 않는 게시글입니다");
         }
 
         Board board = optionalBoard.get();

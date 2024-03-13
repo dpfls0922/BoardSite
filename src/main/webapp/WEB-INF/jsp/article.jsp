@@ -13,23 +13,7 @@
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 %>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>게시판</title>
-    <%--bootstrap css--%>
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-</head>
-<body>
-
-    <nav class="navbar bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/list">게 시 판</a>
-        </div>
-    </nav>
+<%@ include file ="./common/header.jsp"%>
 
     <div class="container mt-4">
         <div class="card">
@@ -64,6 +48,4 @@
             </div>
     </div>
 
-
-</body>
-</html>
+<%@ include file ="./common/footer.jsp"%>

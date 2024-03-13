@@ -14,26 +14,27 @@
 <nav class="navbar bg-body-tertiary">
     <div class="container-fluid">
         <a class="navbar-brand" href="/list">게 시 판</a>
-        <div class="dropdown">
-            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" id="dropdownBtn">
-                dropdown button
-            </button>
-            <div class="dropdown-menu">
-                <% if (request.getUserPrincipal() == null) { %>
-                <a class="dropdown-item" href="/user/login">로그인</a>
-                <% } else { %>
-                <a class="dropdown-item" href="/user/logout">로그아웃</a>
-                <% } %>
-                <a class="dropdown-item" href="/user/signup">회원가입</a>
-            </div>
+        <div>
+            <ul class="navbar-nav d-flex flex-row">
+                <li class="nav-item mr-2">
+                    <% if (request.getUserPrincipal() == null) { %>
+                    <a class="nav-link" href="/user/login">로그인</a>
+                    <% } else { %>
+                    <a class="nav-link" href="/user/logout">로그아웃</a>
+                    <% } %>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/user/signup">회원가입</a>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>
 
 <div class="container mt-4">
-    <div class = "card card-login mx-auto mt-5" style="max-width: 400px;">
-        <div class = "card-header">로그인</div>
-        <div class = "card-body">
+    <div class="card card-login mx-auto mt-5" style="max-width: 400px;">
+        <div class="card-header">로그인</div>
+        <div class="card-body">
             <form action="/user/login" method="post">
                 <% if (request.getParameter("error") != null) { %>
                 <div class="alert alert-danger">

@@ -31,7 +31,7 @@ public class BoardController {
             logger.info("Board: {}", board);
         }
         model.addAttribute("boards", boardService.getAllBoardsReversed());
-        return "list";
+        return "board/list";
     }
     // 상세 보기
     @GetMapping("/list/{id}")
@@ -39,13 +39,13 @@ public class BoardController {
         boardService.increaseHitCount(num);
         BoardDto boardDto = boardService.getBoard(num);
         model.addAttribute("board", boardDto);
-        return "article";
+        return "board/article";
     }
 
     // 생성
     @GetMapping("/register")
     public String register(){
-        return "created";
+        return "board/created";
     }
 
     @PostMapping("/register")
@@ -59,7 +59,7 @@ public class BoardController {
     public String edit(@PathVariable("id") int num, Model model) {
         BoardDto boardDto = boardService.getBoard(num);
         model.addAttribute("board", boardDto);
-        return "edit";
+        return "board/edit";
     }
 
     @PutMapping("/list/edit/{id}")

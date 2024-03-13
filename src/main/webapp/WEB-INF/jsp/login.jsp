@@ -19,7 +19,11 @@
                 dropdown button
             </button>
             <div class="dropdown-menu">
+                <% if (request.getUserPrincipal() == null) { %>
                 <a class="dropdown-item" href="/user/login">로그인</a>
+                <% } else { %>
+                <a class="dropdown-item" href="/user/logout">로그아웃</a>
+                <% } %>
                 <a class="dropdown-item" href="/user/signup">회원가입</a>
             </div>
         </div>

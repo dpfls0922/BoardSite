@@ -63,4 +63,14 @@ public class BoardService {
     public void deletePost(int num) {
         boardRepository.deleteById(num);
     }
+
+    @Transactional
+    public String findUserIdByPostId(int num) {
+        Board board = boardRepository.findById(num).orElse(null);
+        if (board != null) {
+            return board.getName();
+        } else {
+            return null;
+        }
+    }
 }

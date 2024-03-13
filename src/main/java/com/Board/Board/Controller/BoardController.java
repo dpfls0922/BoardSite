@@ -6,6 +6,9 @@ import com.Board.Board.Service.BoardService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.access.AccessDeniedException;
 
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +48,8 @@ public class BoardController {
      */
     @GetMapping("/list/{id}")
     public String detail(@PathVariable("id") int num, Model model) {
+        checkSession();
+
         boardService.increaseHitCount(num);
         BoardDto boardDto = boardService.getBoard(num);
         model.addAttribute("board", boardDto);
@@ -57,6 +62,7 @@ public class BoardController {
      */
     @GetMapping("/register")
     public String register(){
+        checkSession();
         return "board/created";
     }
 
@@ -67,6 +73,8 @@ public class BoardController {
      */
     @PostMapping("/register")
     public String register(BoardDto boardDto){
+        String userid = checkSession();
+
         boardService.savePost(boardDto);
         return "redirect:/list";
     }
@@ -91,6 +99,8 @@ public class BoardController {
      */
     @PutMapping("/list/edit/{id}")
     public String edit(@PathVariable("id") int num, @ModelAttribute BoardDto boardDto) {
+        checkSession();
+
         boardDto.setNum(num);
         boardService.savePost(boardDto);
         return "redirect:/list/{id}";
@@ -103,8 +113,32 @@ public class BoardController {
      */
     @DeleteMapping("/list/remove/{id}")
     public String delete(@PathVariable("id") int num) {
-        // 로그인한 유저의 id와 작성자의 id가 일치해야 삭제 가능하도록 로직 추가하기
+        String loggedInUserId = checkSession();
+        String postUserId = boardService.findUserIdByPostId(num);
+
+        if (!loggedInUserId.equals(postUserId)) {
+            throw new AccessDeniedException("삭제 권한이 없습니다.");
+        }
+
         boardService.deletePost(num);
         return "redirect:/list";
+    }
+
+    private static String checkSession() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userid = "";
+
+        if (principal instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) principal;
+
+            userid = userDetails.getUsername();
+            String auth = userDetails.getAuthorities().toString();
+
+            System.out.println("userid : " + userid);
+            System.out.println("auth : " + auth);
+        } else {
+            System.out.println("인증되지 않은 사용자입니다.");
+        }
+        return userid;
     }
 }

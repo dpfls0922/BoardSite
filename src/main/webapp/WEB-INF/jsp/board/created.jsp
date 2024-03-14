@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8"%>
 <%
     request.setCharacterEncoding("UTF-8");
-    String cp = request.getContextPath();
+    String name = (String) request.getAttribute("userid");
 %>
 
 <%@ include file ="../common/header.jsp"%>
@@ -11,12 +11,12 @@
             <div class="col-md-6">
                 <form action="/register" method="post">
                     <div class="form-group mb-3">
-                        <label for="subject">제목</label>
-                        <input type="text" class="form-control" id="subject" name="subject" placeholder="제목을 입력하세요">
+                        <label for="name"> 작성자 </label>
+                        <input type="text" class="form-control" id="name" name="name" value="<%=name%>" readonly>
                     </div>
                     <div class="form-group mb-3">
-                        <label for="name"> 작성자 </label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="작성자를 입력하세요">
+                        <label for="subject">제목</label>
+                        <input type="text" class="form-control" id="subject" name="subject" placeholder="제목을 입력하세요">
                     </div>
                     <div class="form-group mb-4">
                         <label for="content"> 내용 </label>

@@ -35,6 +35,7 @@ public class BoardService {
                 .hitcount(0)
                 .member(member)
                 .build();
+
         boardRepository.save(result);
 
         return result.getNum();
@@ -57,9 +58,11 @@ public class BoardService {
         }
 
         Board board = optionalBoard.get();
+
         BoardDto boardDto = BoardDto.builder()
                 .num(board.getNum())
-                .name(board.getName())
+                .name(board.getMember().getUserid())
+                .email(board.getMember().getEmail())
                 .subject(board.getSubject())
                 .content(board.getContent())
                 .hitCount(board.getHitCount())
@@ -67,6 +70,16 @@ public class BoardService {
                 .updatedDate(board.getUpdatedDate())
                 .build();
         return boardDto;
+    }
+
+    @Transactional
+    public Integer updatePost(Integer num, BoardDto boardDto){
+        Board board = boardRepository.findById(num).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글입니다"));
+
+        board.update(boardDto.getSubject(), boardDto.getContent());
+        boardRepository.save(board);
+
+        return board.getNum();
     }
     @Transactional
     public void increaseHitCount(int num) {

@@ -7,6 +7,7 @@
     request.setCharacterEncoding("UTF-8");
     Logger logger = LoggerFactory.getLogger("article.jsp");
     BoardDto board = (BoardDto) request.getAttribute("board");
+    String name = (String) request.getAttribute("userid");
     logger.info("Board received in JSP: {}", board);
     logger.info("Board received in JSP: {}", board.getHitCount());
 
@@ -18,7 +19,7 @@
     <div class="container mt-4">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title"><%=board.getName() %></h5>
+                <h5 class="card-title"><%=board.getName()%></h5>
 
                 <div class="d-flex justify-content-between">
                     <p class="card-text text-muted"> <%=board.getCreatedDate().format(formatter)%></p>
@@ -34,8 +35,9 @@
                 </div>
             </div>
 
+        <% if (board.getName().equals(name)) {%>
             <div class="row mt-3">
-                <div class="col-auto mr-auto"></div>
+                <div class="col"></div>
                 <div class="col-auto">
                     <a class="btn btn-primary" href="/list/edit/<%=board.getNum() %>" role="button">수정</a>
                 </div>
@@ -46,6 +48,7 @@
                     </form>
                 </div>
             </div>
+        <%}%>
     </div>
 
 <%@ include file ="../common/footer.jsp"%>

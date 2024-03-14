@@ -62,6 +62,9 @@ public class Board {
         this.hitcount = hitcount;
     }
 
+    public void setMember(Member member) {
+        this.member = member;
+    }
     public void update(String subject, String content) {
         this.subject = subject;
         this.content = content;

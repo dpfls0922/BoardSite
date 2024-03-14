@@ -1,27 +1,43 @@
 package com.Board.Board.Service;
 
+import com.Board.Board.Domain.Entity.Member;
 import com.Board.Board.Domain.Entity.Board;
 import com.Board.Board.Domain.Repository.BoardRepository;
+import com.Board.Board.Domain.Repository.MemberRepository;
 import com.Board.Board.Dto.BoardDto;
-import jakarta.persistence.EntityNotFoundException;
+
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class BoardService {
-    private BoardRepository boardRepository;
-
-    public BoardService(BoardRepository boardRepository){
-        this.boardRepository = boardRepository;
-    }
+    private final BoardRepository boardRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
-    public Integer savePost(BoardDto boardDto){
-        return boardRepository.save(boardDto.toEntity()).getNum();
+    public Integer savePost(BoardDto boardDto, String userid){
+        Member member = memberRepository.findByUserid(userid)
+                .orElseThrow(() -> new UsernameNotFoundException("아이디가 존재하지 않습니다"));
+
+        Board result = Board.builder()
+                .subject(boardDto.getSubject())
+                .content(boardDto.getContent())
+                .name(boardDto.getName())
+                .hitcount(0)
+                .member(member)
+                .build();
+        boardRepository.save(result);
+
+        return result.getNum();
     }
     @Transactional
     public List<Board> getAllBoards() {
@@ -54,8 +70,8 @@ public class BoardService {
     }
     @Transactional
     public void increaseHitCount(int num) {
-        Board board = boardRepository.findById(num).orElseThrow(() -> new EntityNotFoundException("Board not found with num: " + num));
-        board.setHitcount(board.getHitCount() + 1);
+        Board board = boardRepository.findById(num).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글입니다"));
+        board.setHitCount(board.getHitCount() + 1);
         boardRepository.save(board);
     }
 

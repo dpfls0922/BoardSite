@@ -14,6 +14,13 @@
             <a class="navbar-brand" href="/list">게 시 판</a>
             <div class="ms-auto">
                 <ul class="navbar-nav d-flex flex-row">
+                    <li class="nav-item mr-4">
+                        <% if (request.getUserPrincipal() != null) { %>
+                            <span class="navbar-text">
+                                <%= request.getUserPrincipal().getName() %>님! 안녕하세요
+                            </span>
+                        <%}%>
+                    </li>
                     <li class="nav-item mr-2">
                         <% if (request.getUserPrincipal() == null) { %>
                         <a class="nav-link" href="/user/login">로그인</a>

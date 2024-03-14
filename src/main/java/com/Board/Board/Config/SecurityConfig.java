@@ -32,13 +32,14 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/user/signup").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
-                        .requestMatchers("/list/edit/**", "/list/remove/**", "/register/**", "/edit/**").hasRole("USER") // .authenticated()
+                        .requestMatchers("/list/edit/**", "/list/remove/**", "/register/**", "/edit/**", "/user/**").hasRole("USER") // .authenticated()
                         .requestMatchers("/**", "/list", "/list/{id}", "/css/**", "/js/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin((formLogin) -> formLogin
                         .loginPage("/user/login")
-                        .defaultSuccessUrl("/list")
+                        .defaultSuccessUrl("/list", true)
                         .permitAll())
                 .logout((logout) -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))

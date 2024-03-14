@@ -1,38 +1,58 @@
 package com.Board.Board.Service;
 
+import com.Board.Board.Domain.Entity.Board;
 import com.Board.Board.Domain.Entity.Member;
+import com.Board.Board.Domain.Repository.BoardRepository;
 import com.Board.Board.Domain.Repository.MemberRepository;
 import com.Board.Board.Dto.MemberDto;
 
-import jakarta.transaction.Transactional;
+import com.Board.Board.Dto.MemberSignupDto;
+import org.springframework.transaction.annotation.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class MemberService {
 
-    private PasswordEncoder passwordEncoder;
-    private MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final BoardRepository boardRepository;
+    private final MemberRepository memberRepository;
 
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder){
-        this.memberRepository = memberRepository;
-        this.passwordEncoder = passwordEncoder;
+    /* 회원가입 시, 유효성 및 중복 검사 */
+    @Transactional(readOnly = true)
+    public Map<String, String> validateHandling(Errors errors) {
+        Map<String, String> validatorResult = new HashMap<>();
+
+        /* 유효성 및 중복 검사에 실패한 필드 목록을 받음 */
+        for (FieldError error : errors.getFieldErrors()) {
+            String validKeyName = String.format("valid_%s", error.getField());
+            validatorResult.put(validKeyName, error.getDefaultMessage());
+        }
+
+        return validatorResult;
     }
 
     @Transactional
-    public Long join(MemberDto memberDto) {
+    public Long join(MemberSignupDto memberSignupDto) {
 
-        memberDto.setPassword(passwordEncoder.encode(memberDto.getPassword()));
+        memberSignupDto.setPassword1(passwordEncoder.encode(memberSignupDto.getPassword1()));
         Member member = Member.builder()
-                .email(memberDto.getEmail())
-                .username(memberDto.getUsername())
-                .userid(memberDto.getUserid())
-                .password(memberDto.getPassword())
+                .email(memberSignupDto.getEmail())
+                .username(memberSignupDto.getUsername())
+                .userid(memberSignupDto.getUserid())
+                .password(memberSignupDto.getPassword1())
                 .build();
         return memberRepository.save(member).getId();
     }
@@ -60,9 +80,7 @@ public class MemberService {
         member.updateUserEmail(memberUpdatedDto.getEmail());
         member.updatePassword(memberUpdatedDto.getPassword());
 
-        memberRepository.save(member);
-
-        return member.getId();
+        return memberRepository.save(member).getId();
     }
 
     public boolean withdrawal(String userid, String password) {
@@ -70,6 +88,10 @@ public class MemberService {
                 .orElseThrow(() -> new UsernameNotFoundException("아이디가 존재하지 않습니다"));
 
         if (passwordEncoder.matches(password, member.getPassword())) {
+            List<Board> boards = boardRepository.findByMember(member);
+            for (Board board : boards) {
+                board.setMember(null);
+            }
             memberRepository.delete(member);
             return true;
         } else {

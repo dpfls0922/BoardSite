@@ -1,17 +1,11 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.Board.Board.Domain.Entity.Board" %>
-<%@ page import="org.slf4j.Logger" %>
-<%@ page import="org.slf4j.LoggerFactory" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page contentType="text/html; charset=UTF-8"%>
 
 <%
     request.setCharacterEncoding("UTF-8");
-
-    Logger logger = LoggerFactory.getLogger("list.jsp");
     List<Board> boards = (List<Board>) request.getAttribute("boards");
-    logger.info("Boards received in JSP: {}", boards);
-
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 %>
 

@@ -22,7 +22,12 @@
                         <% } %>
                     </li>
                     <li class="nav-item">
+                    <li class="nav-item mr-2">
+                        <% if (request.getUserPrincipal() == null) { %>
                         <a class="nav-link" href="/user/signup">회원가입</a>
+                        <% } else { %>
+                        <a class="nav-link" href="/user/profile">마이페이지</a>
+                        <% } %>
                     </li>
                 </ul>
             </div>

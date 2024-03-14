@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,9 +25,6 @@ public class Board {
 
     @Column(name = "name")
     private String name;
-
-    @Column(name = "email")
-    private String email;
 
     @Column(name = "subject")
     private String subject;
@@ -52,10 +48,9 @@ public class Board {
     private LocalDateTime updatedDate;
 
     @Builder
-    public Board(Integer num, String name, String email, String subject, String content) {
+    public Board(Integer num, String name, String subject, String content) {
         this.num = num;
         this.name = name;
-        this.email = email;
         this.subject = subject;
         this.content = content;
         this.hitcount = 0;
@@ -65,5 +60,10 @@ public class Board {
     }
     public void setHitCount(Integer hitcount) {
         this.hitcount = hitcount;
+    }
+
+    public void update(String subject, String content) {
+        this.subject = subject;
+        this.content = content;
     }
 }

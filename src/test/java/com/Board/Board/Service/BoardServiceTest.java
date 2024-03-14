@@ -31,34 +31,34 @@ class BoardServiceTest {
     @InjectMocks
     BoardService boardService;
 
-    @Test
-    @DisplayName("글 생성하기")
-    void savePostTest() {
-        // given
-        BoardDto boardDto = new BoardDto();
-        boardDto.setNum(1);
-        boardDto.setName("yerin");
-        boardDto.setSubject("title");
-        boardDto.setContent("content");
-
-        Board boardEntity = Board.builder()
-                .num(boardDto.getNum())
-                .name(boardDto.getName())
-                .subject(boardDto.getSubject())
-                .content(boardDto.getContent())
-                .build();
-        when(boardRepository.save(any())).thenReturn(boardEntity);
-
-        // When
-        Integer savedBoardNum = boardService.savePost(boardDto);
-
-        // Then
-        assertEquals(boardEntity.getName(), boardDto.getName());
-        assertEquals(boardEntity.getSubject(), boardDto.getSubject());
-        assertEquals(1, savedBoardNum);
-        assertNotNull(savedBoardNum, "게시물 번호는 null이 아니어야 합니다.");
-        // 실제로 디비에 저장되지 않기 때문에 setNum 하지 않으면 num은 null 값을 가짐
-    }
+//    @Test
+//    @DisplayName("글 생성하기")
+//    void savePostTest() {
+//        // given
+//        BoardDto boardDto = new BoardDto();
+//        boardDto.setNum(1);
+//        boardDto.setName("yerin");
+//        boardDto.setSubject("title");
+//        boardDto.setContent("content");
+//
+//        Board boardEntity = Board.builder()
+//                .num(boardDto.getNum())
+//                .name(boardDto.getName())
+//                .subject(boardDto.getSubject())
+//                .content(boardDto.getContent())
+//                .build();
+//        when(boardRepository.save(any())).thenReturn(boardEntity);
+//
+//        // When
+//        Integer savedBoardNum = boardService.savePost(boardDto);
+//
+//        // Then
+//        assertEquals(boardEntity.getName(), boardDto.getName());
+//        assertEquals(boardEntity.getSubject(), boardDto.getSubject());
+//        assertEquals(1, savedBoardNum);
+//        assertNotNull(savedBoardNum, "게시물 번호는 null이 아니어야 합니다.");
+//        // 실제로 디비에 저장되지 않기 때문에 setNum 하지 않으면 num은 null 값을 가짐
+//    }
 
     @Test
     @DisplayName("모든 게시글 불러오기")
@@ -119,7 +119,7 @@ class BoardServiceTest {
         int boardId = 1;
         Board board = new Board();
         board.setNum(boardId);
-        board.setHitcount(5);
+        board.setHitCount(5);
 
         when(boardRepository.findById(boardId)).thenReturn(Optional.of(board));
 

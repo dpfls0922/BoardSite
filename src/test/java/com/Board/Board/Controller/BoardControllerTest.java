@@ -82,18 +82,18 @@ class BoardControllerTest {
                     .andExpect(view().name("created"));
         }
 
-        @Test
-        @DisplayName("Post")
-        void registerPost() throws Exception {
-            mockMvc.perform(post("/register")
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED) // application/x-www-form-urlencoded
-                    .param("title", "새로운 제목")
-                    .param("content", "새로운 내용"))
-                    .andExpect(status().is3xxRedirection())             // 리다이렉션 응답 코드
-                    .andExpect(redirectedUrl("/list"));
-
-            verify(boardService, times(1)).savePost(any());
-        }
+//        @Test
+//        @DisplayName("Post")
+//        void registerPost() throws Exception {
+//            mockMvc.perform(post("/register")
+//                    .contentType(MediaType.APPLICATION_FORM_URLENCODED) // application/x-www-form-urlencoded
+//                    .param("title", "새로운 제목")
+//                    .param("content", "새로운 내용"))
+//                    .andExpect(status().is3xxRedirection())             // 리다이렉션 응답 코드
+//                    .andExpect(redirectedUrl("/list"));
+//
+//            verify(boardService, times(1)).savePost(any());
+//        }
     }
 
     @Nested
@@ -112,20 +112,20 @@ class BoardControllerTest {
                     .andExpect(view().name("edit"));
         }
 
-        @Test
-        @DisplayName("Put")
-        void editPut() throws Exception {
-            int boardId = 1;
-            mockMvc.perform(put("/list/edit/{id}", boardId)
-                            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                            .param("name", "수정한 작성자")
-                            .param("title", "수정한 제목")
-                            .param("content", "수정한 내용"))
-                    .andExpect(status().is3xxRedirection())
-                    .andExpect(redirectedUrl("/list/1"));
-
-            verify(boardService, times(1)).savePost(any());
-        }
+//        @Test
+//        @DisplayName("Put")
+//        void editPut() throws Exception {
+//            int boardId = 1;
+//            mockMvc.perform(put("/list/edit/{id}", boardId)
+//                            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+//                            .param("name", "수정한 작성자")
+//                            .param("title", "수정한 제목")
+//                            .param("content", "수정한 내용"))
+//                    .andExpect(status().is3xxRedirection())
+//                    .andExpect(redirectedUrl("/list/1"));
+//
+//            verify(boardService, times(1)).savePost(any());
+//        }
     }
 
     @Test

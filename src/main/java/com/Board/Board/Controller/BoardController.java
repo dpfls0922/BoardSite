@@ -48,8 +48,6 @@ public class BoardController {
      */
     @GetMapping("/list/{id}")
     public String detail(@PathVariable("id") int num, Model model) {
-        checkSession();
-
         boardService.increaseHitCount(num);
         BoardDto boardDto = boardService.getBoard(num);
         model.addAttribute("board", boardDto);
@@ -75,7 +73,7 @@ public class BoardController {
     public String register(BoardDto boardDto){
         String userid = checkSession();
 
-        boardService.savePost(boardDto);
+        boardService.savePost(boardDto, userid);
         return "redirect:/list";
     }
 
@@ -99,10 +97,10 @@ public class BoardController {
      */
     @PutMapping("/list/edit/{id}")
     public String edit(@PathVariable("id") int num, @ModelAttribute BoardDto boardDto) {
-        checkSession();
+        String userid = checkSession();
 
         boardDto.setNum(num);
-        boardService.savePost(boardDto);
+        boardService.savePost(boardDto, userid);
         return "redirect:/list/{id}";
     }
 

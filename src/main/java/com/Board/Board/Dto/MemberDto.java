@@ -1,12 +1,10 @@
 package com.Board.Board.Dto;
 
+import com.Board.Board.Domain.Entity.Member;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -27,4 +25,11 @@ public class MemberDto {
 
     @NotBlank(message="비밀번호를 입력해주세요")
     private String password;
+
+    @Builder
+    public MemberDto(Member member) {
+        this.email = member.getEmail();
+        this.username = member.getUsername();
+        this.userid = member.getUserid();
+    }
 }

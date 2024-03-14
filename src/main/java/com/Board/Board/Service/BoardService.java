@@ -61,8 +61,7 @@ public class BoardService {
 
         BoardDto boardDto = BoardDto.builder()
                 .num(board.getNum())
-                .name(board.getMember().getUserid())
-                .email(board.getMember().getEmail())
+                .name(board.getName())
                 .subject(board.getSubject())
                 .content(board.getContent())
                 .hitCount(board.getHitCount())

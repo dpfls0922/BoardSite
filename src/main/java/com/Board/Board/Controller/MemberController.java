@@ -1,28 +1,40 @@
 package com.Board.Board.Controller;
 
 import com.Board.Board.Dto.MemberDto;
+import com.Board.Board.Dto.MemberSignupDto;
 import com.Board.Board.Service.MemberService;
+import com.Board.Board.Validator.CheckSignupValidator;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.Errors;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.Map;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/user")
 public class MemberController {
-    private MemberService memberService;
-    @Autowired
-    public MemberController(MemberService memberService){
-        this.memberService = memberService;
+    private final MemberService memberService;
+    private final CheckSignupValidator checkSignupValidator;
+
+    /* 유효성 검증 */
+    @InitBinder
+    public void validatorBinder(WebDataBinder binder) {
+        binder.addValidators(checkSignupValidator);
     }
 
     @GetMapping("/signup")
@@ -31,8 +43,21 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-    public String signup(MemberDto memberDto){
-        Long memberId = memberService.join(memberDto);
+    public String signup(@Valid MemberSignupDto memberSignupDto, Errors errors, Model model){
+        /* 검증 */
+        if (errors.hasErrors()) {
+            /* 회원가입 실패 시 입력 데이터 유지 */
+            model.addAttribute("dto", memberSignupDto);
+
+            /* 유효성 검사를 통과하지 못한 필드와 메세지 핸들링 */
+            Map<String, String> validatorResult = memberService.validateHandling(errors);
+            for (String key : validatorResult.keySet()) {
+                System.out.println(key + " : " + validatorResult.get(key));
+                model.addAttribute(key, validatorResult.get(key));
+            }
+            return "member/signup";
+        }
+        Long memberId = memberService.join(memberSignupDto);
         return "redirect:/list";
     }
 
@@ -71,10 +96,14 @@ public class MemberController {
     }
 
     @PostMapping("/withdrawal")
-    public String memberWithdrawal(@RequestParam String password, Model model) {
+    public String memberWithdrawal(@RequestParam String password, Model model, HttpServletRequest request, HttpServletResponse response) {
         boolean result = memberService.withdrawal(checkSession(), password);
 
         if (result) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null) {
+                new SecurityContextLogoutHandler().logout(request, response, auth);
+            }
             return "redirect:/list";
         } else {
             model.addAttribute("wrongPassword", "비밀번호가 일치하지 않습니다");

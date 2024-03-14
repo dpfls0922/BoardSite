@@ -50,7 +50,9 @@ public class BoardController {
     public String detail(@PathVariable("id") int num, Model model) {
         boardService.increaseHitCount(num);
         BoardDto boardDto = boardService.getBoard(num);
+
         model.addAttribute("board", boardDto);
+        model.addAttribute("userid", checkSession());
         return "board/article";
     }
 
@@ -59,8 +61,8 @@ public class BoardController {
      * @return 게시글 작성 페이지
      */
     @GetMapping("/register")
-    public String register(){
-        checkSession();
+    public String register(Model model){
+        model.addAttribute("userid", checkSession());
         return "board/created";
     }
 
@@ -71,9 +73,7 @@ public class BoardController {
      */
     @PostMapping("/register")
     public String register(BoardDto boardDto){
-        String userid = checkSession();
-
-        boardService.savePost(boardDto, userid);
+        boardService.savePost(boardDto, checkSession());
         return "redirect:/list";
     }
 
@@ -85,6 +85,11 @@ public class BoardController {
     @GetMapping("/list/edit/{id}")
     public String edit(@PathVariable("id") int num, Model model) {
         BoardDto boardDto = boardService.getBoard(num);
+
+    if (!boardDto.getName().equals(checkSession())) {
+            return "redirect:/list";
+        }
+
         model.addAttribute("board", boardDto);
         return "board/edit";
     }
@@ -97,10 +102,7 @@ public class BoardController {
      */
     @PutMapping("/list/edit/{id}")
     public String edit(@PathVariable("id") int num, @ModelAttribute BoardDto boardDto) {
-        String userid = checkSession();
-
-        boardDto.setNum(num);
-        boardService.savePost(boardDto, userid);
+        boardService.updatePost(num, boardDto);
         return "redirect:/list/{id}";
     }
 
@@ -111,13 +113,12 @@ public class BoardController {
      */
     @DeleteMapping("/list/remove/{id}")
     public String delete(@PathVariable("id") int num) {
-        String loggedInUserId = checkSession();
-        String postUserId = boardService.findUserIdByPostId(num);
+        String loggedInUserid = checkSession();
+        String postUserid = boardService.findUserIdByPostId(num);
 
-        if (!loggedInUserId.equals(postUserId)) {
-            throw new AccessDeniedException("삭제 권한이 없습니다.");
+        if (!loggedInUserid.equals(postUserid)) {
+            return "redirect:/list";
         }
-
         boardService.deletePost(num);
         return "redirect:/list";
     }

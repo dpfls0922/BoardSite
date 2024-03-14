@@ -1,10 +1,7 @@
 package com.Board.Board.Domain.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
@@ -13,10 +10,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
+@Entity
+@Getter
+@Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@Entity
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
@@ -24,17 +23,30 @@ public class Board {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer num;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "subject")
     private String subject;
+
+    @Column(name = "content")
     private String content;
 
     @Column(nullable = false)
     private Integer hitcount = 0;
 
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @CreatedDate
     @Column(name = "created", updatable = false)
     private LocalDateTime createdDate;
+
     @LastModifiedDate
     @Column(name = "updated")
     private LocalDateTime updatedDate;
@@ -50,5 +62,8 @@ public class Board {
     }
     public Integer getHitCount() {
         return this.hitcount;
+    }
+    public void setHitCount(Integer hitcount) {
+        this.hitcount = hitcount;
     }
 }

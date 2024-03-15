@@ -50,11 +50,12 @@
                 <div class="col-auto">
                     <form id="delete-form" action="/list/remove/<%=board.getNum() %>" method="post">
                         <input type="hidden" name="_method" value="delete" />
-                        <button id="delete-btn" type="submit" class="btn btn-danger">삭제</button>
+                        <button id="delete-btn" class="btn btn-danger">삭제</button>
                     </form>
                 </div>
             </div>
         <%}%>
     </div>
 
+</script>
 <%@ include file ="../common/footer.jsp"%>

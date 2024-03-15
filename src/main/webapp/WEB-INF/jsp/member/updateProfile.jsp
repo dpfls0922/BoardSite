@@ -15,9 +15,8 @@
                     <div class="form-group">
                         <input type="text" class="form-control" id="userid" name="userid" value="<%= member.getUserid() %>" readonly>
                     </div>
-                    <div class="form-floating mb-3">
-                        <input type="email" class="form-control" id="email" name="email" value="<%= member.getEmail() %>">
-                        <label for="email">이메일</label>
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="email" name="email" value="<%= member.getEmail() %>" readonly>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="username" name="username" value="<%= member.getUsername() %>" maxlength="20">

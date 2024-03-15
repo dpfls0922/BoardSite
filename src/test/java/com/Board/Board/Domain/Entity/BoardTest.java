@@ -18,7 +18,6 @@ class BoardTest {
         // when
         board.setNum(1);
         board.setName("yerin");
-        board.setEmail("dpfls0922@example.com");
         board.setSubject("title");
         board.setContent("content");
         board.setHitcount(10);
@@ -27,7 +26,6 @@ class BoardTest {
         // then
         assertEquals(1, board.getNum());
         assertEquals("yerin", board.getName());
-        assertEquals("dpfls0922@example.com", board.getEmail());
         assertEquals("title", board.getSubject());
         assertEquals("content", board.getContent());
         assertEquals(10, board.getHitCount());
@@ -61,7 +59,6 @@ class BoardTest {
         // when
         board.setNum(1);
         board.setName("yerin");
-        board.setEmail("yerin@gmail.com");
         board.setCreatedDate(currentDateTime);
         board.setUpdatedDate(currentDateTime);
         String expectedToString = "Board(num=1, name=yerin, email=yerin@gmail.com, subject=null, " +
@@ -77,13 +74,11 @@ class BoardTest {
         Board board = Board.builder().
             num(1).
             name("yerin").
-            email("dpfls0922@gmail.com").
             subject("title").
             content("content").build();
         // then
         assertEquals(1, board.getNum());
         assertEquals("yerin", board.getName());
-        assertEquals("dpfls0922@gmail.com", board.getEmail());
         assertEquals("title", board.getSubject());
         assertEquals("content", board.getContent());
     }

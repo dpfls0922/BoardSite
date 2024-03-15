@@ -119,7 +119,7 @@ class BoardServiceTest {
         int boardId = 1;
         Board board = new Board();
         board.setNum(boardId);
-        board.setHitCount(5);
+        board.setHitcount(5);
 
         when(boardRepository.findById(boardId)).thenReturn(Optional.of(board));
 

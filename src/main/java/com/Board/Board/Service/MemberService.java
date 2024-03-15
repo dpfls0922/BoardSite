@@ -6,7 +6,6 @@ import com.Board.Board.Domain.Repository.BoardRepository;
 import com.Board.Board.Domain.Repository.MemberRepository;
 import com.Board.Board.Dto.MemberDto;
 import com.Board.Board.Dto.MemberSignupDto;
-import com.Board.Board.Dto.MemberUpdateDto;
 import org.springframework.ui.Model;
 
 import org.springframework.transaction.annotation.Transactional;

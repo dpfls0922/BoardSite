@@ -24,7 +24,6 @@ public class CheckSignupValidator extends AbstractValidator<MemberSignupDto>{
         if(!isPasswordMatching(dto.getPassword1(), dto.getPassword2())) {
             errors.rejectValue("password2", "비밀번호 일치 오류", "패스워드가 일치하지 않습니다");
         }
-
     }
     public boolean isPasswordMatching(String password1, String password2) {
         if (password1.equals(password2)){

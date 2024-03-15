@@ -25,7 +25,7 @@ public class SecurityConfig {
         http
                 .cors(AbstractHttpConfigurer::disable)                   // cors 방지
                 .csrf(AbstractHttpConfigurer::disable)                   // csrf 방지
-                .formLogin(AbstractHttpConfigurer::disable)             // 기본 로그인 페이지 없애기
+                .formLogin(AbstractHttpConfigurer::disable)              // 기본 로그인 페이지 없애기
                 .headers((headers) -> headers
                         .addHeaderWriter(new XFrameOptionsHeaderWriter(
                                 XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN)));
@@ -54,7 +54,6 @@ public class SecurityConfig {
     AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

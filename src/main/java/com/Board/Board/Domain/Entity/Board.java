@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -57,13 +58,6 @@ public class Board {
     }
     public Integer getHitCount() {
         return this.hitcount;
-    }
-    public void setHitCount(Integer hitcount) {
-        this.hitcount = hitcount;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
     }
     public void update(String subject, String content) {
         this.subject = subject;

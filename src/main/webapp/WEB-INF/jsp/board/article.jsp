@@ -19,7 +19,13 @@
     <div class="container mt-4">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title"><%=board.getName()%></h5>
+                <h5 class="card-title">
+                    <% if(board.getName().equals("(탈퇴한 회원)")) { %>
+                    <span style="color: grey;"><%= board.getName() %></span>
+                    <% } else { %>
+                    <span><%= board.getName() %></span>
+                    <% } %>
+                </h5>
 
                 <div class="d-flex justify-content-between">
                     <p class="card-text text-muted"> <%=board.getCreatedDate().format(formatter)%></p>

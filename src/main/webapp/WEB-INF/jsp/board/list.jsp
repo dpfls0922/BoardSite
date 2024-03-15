@@ -32,13 +32,18 @@
                 </tr>
                 </thead>
                 <tbody>
+                    <% int index = boards.size(); %>
                     <%for(Board board : boards) { %>
                         <tr>
-                            <td><%=board.getNum() %></td>
+                            <td><%= index-- %></td>
                             <td>
                                 <a href="/list/<%=board.getNum()%>"><%=board.getSubject() %></a>
                             </td>
-                            <td><%=board.getName() %></td>
+                            <% if(board.getName().equals("(탈퇴한 회원)")) { %>
+                            <td style="color: grey;"><%= board.getName() %></td>
+                            <% } else { %>
+                            <td><%= board.getName() %></td>
+                            <% } %>
                             <td>
                                 <%=board.getCreatedDate().format(formatter)%>
                             </td>

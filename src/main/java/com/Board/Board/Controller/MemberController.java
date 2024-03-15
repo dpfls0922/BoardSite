@@ -19,7 +19,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.security.web.authentication.logout.LogoutHandler;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
@@ -50,11 +49,7 @@ public class MemberController {
             model.addAttribute("dto", memberSignupDto);
 
             /* 유효성 검사를 통과하지 못한 필드와 메세지 핸들링 */
-            Map<String, String> validatorResult = memberService.validateHandling(errors);
-            for (String key : validatorResult.keySet()) {
-                System.out.println(key + " : " + validatorResult.get(key));
-                model.addAttribute(key, validatorResult.get(key));
-            }
+            memberService.messageHandling(errors, model);
             return "member/signup";
         }
         Long memberId = memberService.join(memberSignupDto);
@@ -76,7 +71,7 @@ public class MemberController {
     }
 
     @GetMapping("/update")
-    public String updateUsernameForm(Model model){
+    public String updateUser(Model model){
         String userid = checkSession();
         MemberDto member = memberService.findMember(userid);
         model.addAttribute("member", member);
@@ -84,7 +79,13 @@ public class MemberController {
     }
 
     @PostMapping("/update")
-    public String updateUser(MemberDto memberUpdatedDto, Model model){
+    public String updateUser(MemberDto memberUpdatedDto, Errors errors, Model model){
+        if (errors.hasErrors()) {
+            model.addAttribute("member", memberUpdatedDto);
+            memberService.messageHandling(errors, model);
+            return "member/updateProfile";
+        }
+
         model.addAttribute("member", memberUpdatedDto);
         memberService.updateMember(memberUpdatedDto);
         return "member/profile";

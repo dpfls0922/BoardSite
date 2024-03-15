@@ -5,8 +5,10 @@ import com.Board.Board.Domain.Entity.Member;
 import com.Board.Board.Domain.Repository.BoardRepository;
 import com.Board.Board.Domain.Repository.MemberRepository;
 import com.Board.Board.Dto.MemberDto;
-
 import com.Board.Board.Dto.MemberSignupDto;
+import com.Board.Board.Dto.MemberUpdateDto;
+import org.springframework.ui.Model;
+
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,6 +46,14 @@ public class MemberService {
         return validatorResult;
     }
 
+    public void messageHandling(Errors errors, Model model) {
+        Map<String, String> validatorResult = validateHandling(errors);
+
+        /* 유효성 검사를 통과하지 못한 필드와 메세지 핸들링 */
+        for (String key : validatorResult.keySet()) {
+            model.addAttribute(key, validatorResult.get(key));
+        }
+    }
     @Transactional
     public Long join(MemberSignupDto memberSignupDto) {
 

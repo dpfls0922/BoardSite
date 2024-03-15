@@ -83,7 +83,7 @@ public class BoardService {
     @Transactional
     public void increaseHitCount(int num) {
         Board board = boardRepository.findById(num).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글입니다"));
-        board.setHitCount(board.getHitCount() + 1);
+        board.setHitcount(board.getHitCount() + 1);
         boardRepository.save(board);
     }
 

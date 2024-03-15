@@ -90,23 +90,23 @@
                             <div class="invalid-feedback"><%= valid_userid %></div>
                         </div>
                         <% } %>
-                        <% if (valid_password1 == null) { %>
+                        <% if (valid_password2 == null) { %>
                         <div class="form-floating mb-3">
-                            <input type="password1" name="password1" class="form-control" id="floatingPassword1">
+                            <input type="password" name="password1" class="form-control" id="floatingPassword1">
                             <label for="floatingPassword1">비밀번호</label>
                         </div>
                         <div class="form-floating mb-4">
-                            <input type="password2" name="password2" class="form-control" id="floatingPassword2">
+                            <input type="password" name="password2" class="form-control" id="floatingPassword2">
                             <label for="floatingPassword2">비밀번호</label>
                         </div>
                         <% } else { %>
                         <div class="form-floating mb-3 has-danger">
-                            <input type="password" name="password1" class="form-control" id="floatingPassword1">
+                            <input type="password" name="password1" class="form-control is-invalid" id="floatingPassword1">
                             <label for="floatingPassword1">비밀번호</label>
                             <div class="invalid-feedback"><%= valid_password2 %></div>
                         </div>
                         <div class="form-floating mb-4 has-danger">
-                            <input type="password2" name="password2" class="form-control" id="floatingPassword2">
+                            <input type="password" name="password2" class="form-control is-invalid" id="floatingPassword2">
                             <label for="floatingPassword2">비밀번호</label>
                             <div class="invalid-feedback"><%= valid_password2 %></div>
                         </div>

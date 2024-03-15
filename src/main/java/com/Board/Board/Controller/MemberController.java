@@ -91,12 +91,12 @@ public class MemberController {
     }
 
     @GetMapping("/withdrawal")
-    public String memberWithdrawal() {
+    public String withdrawal() {
         return "member/withdrawal";
     }
 
     @PostMapping("/withdrawal")
-    public String memberWithdrawal(@RequestParam String password, Model model, HttpServletRequest request, HttpServletResponse response) {
+    public String withdrawal(@RequestParam String password, Model model, HttpServletRequest request, HttpServletResponse response) {
         boolean result = memberService.withdrawal(checkSession(), password);
 
         if (result) {

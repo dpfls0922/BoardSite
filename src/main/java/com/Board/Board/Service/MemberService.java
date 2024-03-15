@@ -86,10 +86,10 @@ public class MemberService {
     public boolean withdrawal(String userid, String password) {
         Member member = memberRepository.findByUserid(userid)
                 .orElseThrow(() -> new UsernameNotFoundException("아이디가 존재하지 않습니다"));
-
         if (passwordEncoder.matches(password, member.getPassword())) {
             List<Board> boards = boardRepository.findByMember(member);
             for (Board board : boards) {
+                board.setName("(탈퇴한 회원)");
                 board.setMember(null);
             }
             memberRepository.delete(member);

@@ -1,9 +1,6 @@
 spring:
-  datasource:
-    url: jdbc:mariadb://localhost:3306/Board
-    username: root
-    password: root
-    driver-class-name: org.mariadb.jdbc.Driver
+  profiles:
+    include: datasource, jwt
 
   mvc:
     view:
@@ -14,7 +11,3 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-
-mybatis:
-  mapper-locations: classpath:/mapper/*.xml
-  type-aliases-package: com.Board.domain

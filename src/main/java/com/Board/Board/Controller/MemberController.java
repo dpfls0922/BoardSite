@@ -58,6 +58,9 @@ public class MemberController {
 
     @GetMapping("/login")
     public String login(){
+        if (!checkSession().equals("")) {
+            return "redirect:/list";
+        }
         return "member/login";
     }
 

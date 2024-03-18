@@ -41,8 +41,8 @@ class BoardControllerTest {
     @BeforeEach
     void beforeEach(){
         dummyBoards = Arrays.asList(
-                new Board(1, "작성자 1", "이메일 1", "제목 1", "내용 1"),
-                new Board(2, "작성자 2", "이메일 2", "제목 2", "내용 2")
+                new Board(1, "이메일 1", "제목 1", "내용 1"),
+                new Board(2,  "이메일 2", "제목 2", "내용 2")
         );
     }
 

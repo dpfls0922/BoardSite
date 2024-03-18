@@ -30,7 +30,6 @@ class BoardDtoTest {
         assertNotNull(board);
         assertEquals(boardDto.getNum(), board.getNum());
         assertEquals(boardDto.getName(), board.getName());
-        assertEquals(boardDto.getEmail(), board.getEmail());
         assertEquals(boardDto.getSubject(), board.getSubject());
         assertEquals(boardDto.getContent(), board.getContent());
         assertEquals(0, board.getHitCount());

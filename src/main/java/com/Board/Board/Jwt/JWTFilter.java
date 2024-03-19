@@ -46,7 +46,7 @@ public class JWTFilter extends OncePerRequestFilter {
         Member member = Member.builder()
                         .userid(username)
                         .password("temppassword")
-                        .role(MemberRole.valueOf(role))
+                        .role(MemberRole.USER)
                         .build();
 
         MemberDetails memberDetails = new MemberDetails(member);

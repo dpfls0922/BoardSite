@@ -8,7 +8,9 @@ import com.Board.Board.Validator.CheckSignupValidator;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -21,14 +23,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.Map;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/user")
 public class MemberController {
     private final MemberService memberService;
     private final CheckSignupValidator checkSignupValidator;
+    private final PasswordEncoder passwordEncoder;
 
     /* 유효성 검증 */
     @InitBinder
@@ -63,7 +66,6 @@ public class MemberController {
         }
         return "member/login";
     }
-
 
     @GetMapping("/profile")
     public String mypage(Model model){

@@ -86,7 +86,6 @@ public class MemberService {
         memberUpdatedDto.setPassword(passwordEncoder.encode(memberUpdatedDto.getPassword()));
 
         member.updateUsername(memberUpdatedDto.getUsername());
-        member.updateUserEmail(memberUpdatedDto.getEmail());
         member.updatePassword(memberUpdatedDto.getPassword());
 
         return memberRepository.save(member).getId();

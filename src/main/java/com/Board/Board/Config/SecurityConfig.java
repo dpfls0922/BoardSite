@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable);
 
         LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil);
-        loginFilter.setFilterProcessesUrl("/user/login");
+        loginFilter.setFilterProcessesUrl("/auth/login");
 
         http
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class)
@@ -56,7 +56,6 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/user/signup").permitAll()
-                        .requestMatchers("/user/login").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .requestMatchers("/list/edit/**", "/list/remove/**", "/register/**", "/edit/**", "/user/**").hasRole("USER")
                         .requestMatchers("/**", "/list", "/list/{id}", "/css/**", "/js/**").permitAll()

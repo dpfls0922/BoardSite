@@ -21,39 +21,33 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authorization = request.getHeader("Authorization");
 
-        if (authorization == null || !authorization.startsWith("Bearer ")){
-            System.out.println("token null");
-            filterChain.doFilter(request, response);
+        System.out.println("JWTFilter now");
+        String token = jwtUtil.resolveToken(request);
 
-            return;
+        System.out.println("token : " + token);
+
+        if (token != null) {
+            if (jwtUtil.isExpired(token)) {
+                System.out.println("token expired");
+            }
+            String username = jwtUtil.getUsername(token);
+            Member member = Member.builder()
+                    .userid(username)
+                    .password("temppassword")
+                    .role(MemberRole.USER)
+                    .build();
+
+            MemberDetails memberDetails = new MemberDetails(member);
+
+            Authentication authToken = new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+
+            System.out.println("Authenticated");
+            System.out.println("token : " + token);
         }
 
-        System.out.println("authorization now");
-        String token = authorization.split(" ")[1];
-
-        if (jwtUtil.isExpired(token)){
-            System.out.println("token expired");
-            filterChain.doFilter(request, response);
-
-            return;
-        }
-
-        String username = jwtUtil.getUsername(token);
-        String role = jwtUtil.getRole(token);
-
-        Member member = Member.builder()
-                        .userid(username)
-                        .password("temppassword")
-                        .role(MemberRole.USER)
-                        .build();
-
-        MemberDetails memberDetails = new MemberDetails(member);
-
-        Authentication authToken = new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authToken);
-
+        /*다음 필터 진행*/
         filterChain.doFilter(request, response);
     }
 }

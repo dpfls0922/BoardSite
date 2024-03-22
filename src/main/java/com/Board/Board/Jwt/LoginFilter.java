@@ -2,7 +2,6 @@ package com.Board.Board.Jwt;
 
 import com.Board.Board.Dto.MemberDetails;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -53,8 +52,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String token = jwtUtil.createJwt(username, role, 60*60*10L);
 
         response.addHeader("Authorization", "Bearer " + token);
+
         System.out.println("success");
         System.out.println("Bearer " + token);
+
+        jwtUtil.addJwtToCookie(token, response);
+        response.sendRedirect("/list");
     }
 
     @Override

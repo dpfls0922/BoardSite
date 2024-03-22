@@ -2,8 +2,10 @@ package com.Board.Board.Controller;
 
 import com.Board.Board.Domain.Entity.Board;
 import com.Board.Board.Dto.BoardDto;
+import com.Board.Board.Jwt.JWTUtil;
 import com.Board.Board.Service.BoardService;
 
+import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,7 +24,7 @@ public class BoardController {
 
     private BoardService boardService;
     @Autowired
-    public BoardController(BoardService boardService){
+    public BoardController(BoardService boardService, JWTUtil jwtUtil){
         this.boardService = boardService;
     }
 
@@ -31,11 +33,14 @@ public class BoardController {
      * @return 게시글 전체 목록 페이지
      */
     @GetMapping("/list")
-    public String list(Model model){
+    public String list(Model model){ // , @CookieValue(value = "jwt", required = false) Cookie cookie)
         List<Board> boards = boardService.getAllBoards();
         for (Board board : boards) {
             logger.info("Board: {}", board);
         }
+
+//        System.out.println(jwtUtil.getUsername(cookie.getValue())); // 쿠키
+
         model.addAttribute("boards", boardService.getAllBoardsReversed());
         return "board/list";
     }

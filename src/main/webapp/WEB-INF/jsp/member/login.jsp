@@ -30,8 +30,3 @@
 </div>
 
 <%@ include file ="../common/footer.jsp"%>
-
-<script>
-    var jwt = '<%= request.getHeader("Authorization") %>';
-    localStorage.setItem("jwt", jwt.replace("Bearer ", ""));
-</script>

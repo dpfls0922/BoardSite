@@ -53,9 +53,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         response.addHeader("Authorization", "Bearer " + token);
 
-        System.out.println("success");
-        System.out.println("Bearer " + token);
-
         jwtUtil.addJwtToCookie(token, response);
         response.sendRedirect("/list");
     }

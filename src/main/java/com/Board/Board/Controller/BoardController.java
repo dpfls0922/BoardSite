@@ -24,7 +24,7 @@ public class BoardController {
 
     private BoardService boardService;
     @Autowired
-    public BoardController(BoardService boardService, JWTUtil jwtUtil){
+    public BoardController(BoardService boardService){
         this.boardService = boardService;
     }
 
@@ -33,14 +33,11 @@ public class BoardController {
      * @return 게시글 전체 목록 페이지
      */
     @GetMapping("/list")
-    public String list(Model model){ // , @CookieValue(value = "jwt", required = false) Cookie cookie)
+    public String list(Model model){
         List<Board> boards = boardService.getAllBoards();
         for (Board board : boards) {
             logger.info("Board: {}", board);
         }
-
-//        System.out.println(jwtUtil.getUsername(cookie.getValue())); // 쿠키
-
         model.addAttribute("boards", boardService.getAllBoardsReversed());
         return "board/list";
     }

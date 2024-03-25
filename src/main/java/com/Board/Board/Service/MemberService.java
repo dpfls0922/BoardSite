@@ -2,10 +2,14 @@ package com.Board.Board.Service;
 
 import com.Board.Board.Domain.Entity.Board;
 import com.Board.Board.Domain.Entity.Member;
+import com.Board.Board.Domain.Entity.MemberRole;
 import com.Board.Board.Domain.Repository.BoardRepository;
 import com.Board.Board.Domain.Repository.MemberRepository;
 import com.Board.Board.Dto.MemberDto;
 import com.Board.Board.Dto.MemberSignupDto;
+import com.Board.Board.Jwt.JWTUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.ui.Model;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +34,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
+    private final JWTUtil jwtUtil;
 
     /* 회원가입 시, 유효성 및 중복 검사 */
     @Transactional(readOnly = true)
@@ -78,20 +83,25 @@ public class MemberService {
         return memberDto;
     }
 
-    public Long updateMember(MemberDto memberUpdatedDto) {
+    public Long updateMember(MemberDto memberUpdatedDto, HttpServletResponse response) {
         Member member = memberRepository.findByUserid(memberUpdatedDto.getUserid())
                 .orElseThrow(()->new UsernameNotFoundException("아이디가 존재하지 않습니다"));
 
-
-        memberUpdatedDto.setPassword(passwordEncoder.encode(memberUpdatedDto.getPassword()));
-
         member.updateUsername(memberUpdatedDto.getUsername());
-        member.updatePassword(memberUpdatedDto.getPassword());
+        if (!memberUpdatedDto.getPassword().isEmpty()) {
+            memberUpdatedDto.setPassword(passwordEncoder.encode(memberUpdatedDto.getPassword()));
+            member.updatePassword(memberUpdatedDto.getPassword());
+
+            String token = jwtUtil.createJwt(member.getUserid(), MemberRole.USER.getValue());
+
+            response.addHeader("Authorization", "Bearer " + token);
+            jwtUtil.addJwtToCookie(token, response);
+        }
 
         return memberRepository.save(member).getId();
     }
 
-    public boolean withdrawal(String userid, String password) {
+    public boolean withdrawal(String userid, String password, HttpServletRequest request, HttpServletResponse response) {
         Member member = memberRepository.findByUserid(userid)
                 .orElseThrow(() -> new UsernameNotFoundException("아이디가 존재하지 않습니다"));
         if (passwordEncoder.matches(password, member.getPassword())) {
@@ -101,6 +111,7 @@ public class MemberService {
                 board.setMember(null);
             }
             memberRepository.delete(member);
+            jwtUtil.deleteCookie(request, response, "jwt");
             return true;
         } else {
             return false;

@@ -61,12 +61,20 @@ public class MemberService {
     @Transactional
     public Long join(MemberSignupDto memberSignupDto) {
 
+        MemberRole role;
+        if ("admin".equals(memberSignupDto.getUserid())) {
+            role = MemberRole.ADMIN;
+        } else {
+            role = MemberRole.USER;
+        }
+
         memberSignupDto.setPassword1(passwordEncoder.encode(memberSignupDto.getPassword1()));
         Member member = Member.builder()
                 .email(memberSignupDto.getEmail())
                 .username(memberSignupDto.getUsername())
                 .userid(memberSignupDto.getUserid())
                 .password(memberSignupDto.getPassword1())
+                .role(role)
                 .build();
         return memberRepository.save(member).getId();
     }
@@ -92,7 +100,7 @@ public class MemberService {
             memberUpdatedDto.setPassword(passwordEncoder.encode(memberUpdatedDto.getPassword()));
             member.updatePassword(memberUpdatedDto.getPassword());
 
-            String token = jwtUtil.createJwt(member.getUserid(), MemberRole.USER.getValue());
+            String token = jwtUtil.createJwt(member.getUserid(), member.getRole().getValue());
 
             response.addHeader("Authorization", "Bearer " + token);
             jwtUtil.addJwtToCookie(token, response);

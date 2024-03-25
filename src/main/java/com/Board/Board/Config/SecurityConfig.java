@@ -2,6 +2,8 @@ package com.Board.Board.Config;
 
 import com.Board.Board.Jwt.*;
 
+import com.Board.Board.Exception.JWTAccessDeniedHandler;
+import com.Board.Board.Exception.JWTAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +15,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -26,6 +27,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JWTAccessDeniedHandler jwtAccessDeniedHandler;
     private final JWTUtil jwtUtil;
 
     @Bean
@@ -56,11 +59,12 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/user/signup").permitAll()
-                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/admin/*").hasRole("ADMIN")
                         .requestMatchers("/list/edit/**", "/list/remove/**", "/register/**", "/edit/**", "/user/**").hasRole("USER")
                         .requestMatchers("/**", "/list", "/list/{id}", "/css/**", "/js/**").permitAll()
                         .anyRequest().authenticated()
                 );
+
         http
                 .formLogin((formLogin) -> formLogin
                         .loginPage("/user/login")
@@ -71,6 +75,13 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/list")
                         .deleteCookies("jwt")
                         .invalidateHttpSession(true)
+                );
+
+        http
+                .exceptionHandling((exceptionHandling) ->
+                        exceptionHandling
+                                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                                .accessDeniedHandler(jwtAccessDeniedHandler)
                 );
 
         return http.build();

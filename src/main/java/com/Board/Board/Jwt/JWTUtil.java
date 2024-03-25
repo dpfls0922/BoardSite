@@ -10,13 +10,15 @@ import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
 public class JWTUtil {
-    private SecretKey secretKey;
+    private final SecretKey secretKey;
+    @Value("${jwt.expiration}")
+    private Long tokenExpiration;
+
     public JWTUtil(@Value("${jwt.secret}")String secretKey){
         this.secretKey = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
@@ -36,13 +38,13 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
-    public String createJwt(String username, String role, Long expiredMs) {
-
+    public String createJwt(String username, String role) {
+        System.out.println(username);
         return Jwts.builder()
                 .claim("username", username)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiredMs))
+                .expiration(new Date(System.currentTimeMillis() + tokenExpiration))
                 .signWith(secretKey)
                 .compact();
     }
@@ -51,6 +53,21 @@ public class JWTUtil {
         cookie.setHttpOnly(true);
         cookie.setPath("/"); // 모든 곳에서 쿠키열람이 가능
         response.addCookie(cookie);
+    }
+
+    public void deleteCookie(HttpServletRequest request, HttpServletResponse response, String cookieName) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(cookieName)) {
+                    cookie.setValue("");
+                    cookie.setMaxAge(0);
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
+                    break;
+                }
+            }
+        }
     }
 
     // header 토큰을 가져오기 -> 헤더검사 없으면 쿠키검사

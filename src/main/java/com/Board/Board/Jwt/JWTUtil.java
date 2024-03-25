@@ -17,7 +17,7 @@ import java.util.Date;
 public class JWTUtil {
     private final SecretKey secretKey;
     @Value("${jwt.expiration}")
-    private Long tokenExpiration;
+    private Long expiredMs;
 
     public JWTUtil(@Value("${jwt.secret}")String secretKey){
         this.secretKey = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
@@ -44,7 +44,7 @@ public class JWTUtil {
                 .claim("username", username)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + tokenExpiration))
+                .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)
                 .compact();
     }

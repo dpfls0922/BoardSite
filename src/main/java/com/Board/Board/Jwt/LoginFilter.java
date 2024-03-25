@@ -48,7 +48,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority auth = iterator.next();
 
         String role = auth.getAuthority();
-
         String token = jwtUtil.createJwt(username, role);
 
         response.addHeader("Authorization", "Bearer " + token);
@@ -59,6 +58,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
-        response.sendRedirect("/user/login");
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }

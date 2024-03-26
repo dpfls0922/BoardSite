@@ -1,9 +1,11 @@
 package com.Board.Board.Config;
 
+import com.Board.Board.Jwt.JWTExceptionFilter;
 import com.Board.Board.Jwt.*;
 
-import com.Board.Board.Exception.JWTAccessDeniedHandler;
-import com.Board.Board.Exception.JWTAuthenticationEntryPoint;
+import com.Board.Board.Handler.CustomAccessDeniedHandler;
+import com.Board.Board.Handler.CustomAuthenticationEntryPoint;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,8 +29,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
-    private final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final JWTAccessDeniedHandler jwtAccessDeniedHandler;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final JWTUtil jwtUtil;
 
     @Bean
@@ -53,6 +55,7 @@ public class SecurityConfig {
 
         http
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class)
+                .addFilterBefore(new JWTExceptionFilter(jwtUtil), JWTFilter.class)
                 .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
@@ -80,8 +83,8 @@ public class SecurityConfig {
         http
                 .exceptionHandling((exceptionHandling) ->
                         exceptionHandling
-                                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                                .accessDeniedHandler(jwtAccessDeniedHandler)
+                                .authenticationEntryPoint(customAuthenticationEntryPoint)
+                                .accessDeniedHandler(customAccessDeniedHandler)
                 );
 
         return http.build();

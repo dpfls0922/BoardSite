@@ -58,6 +58,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+        response.sendRedirect("/user/login");
     }
 }

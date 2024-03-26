@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("DTO 생성 테스트")
+@DisplayName("BoardDto 생성 테스트")
 class BoardDtoTest {
 
     @Test

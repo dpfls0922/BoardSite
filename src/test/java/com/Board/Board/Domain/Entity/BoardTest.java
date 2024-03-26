@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("Entity 생성 테스트")
+@DisplayName("BoardEntity 생성 테스트")
 class BoardTest {
 
     @Test

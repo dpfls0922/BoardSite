@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @Transactional
-@DisplayName("Service 생성 테스트")
+@DisplayName("BoardService 생성 테스트")
 @ExtendWith(MockitoExtension.class)
 class BoardServiceTest {
 

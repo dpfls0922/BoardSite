@@ -1,6 +1,8 @@
 package com.Board.Board.Service;
 
+import com.Board.Board.Domain.Entity.Member;
 import com.Board.Board.Domain.Repository.BoardRepository;
+import com.Board.Board.Domain.Repository.MemberRepository;
 import com.Board.Board.Dto.BoardDto;
 import com.Board.Board.Domain.Entity.Board;
 
@@ -28,37 +30,50 @@ class BoardServiceTest {
 
     @Mock
     BoardRepository boardRepository;
+    @Mock
+    MemberRepository memberRepository;
     @InjectMocks
     BoardService boardService;
 
-//    @Test
-//    @DisplayName("글 생성하기")
-//    void savePostTest() {
-//        // given
-//        BoardDto boardDto = new BoardDto();
-//        boardDto.setNum(1);
-//        boardDto.setName("yerin");
-//        boardDto.setSubject("title");
-//        boardDto.setContent("content");
-//
-//        Board boardEntity = Board.builder()
-//                .num(boardDto.getNum())
-//                .name(boardDto.getName())
-//                .subject(boardDto.getSubject())
-//                .content(boardDto.getContent())
-//                .build();
-//        when(boardRepository.save(any())).thenReturn(boardEntity);
-//
-//        // When
-//        Integer savedBoardNum = boardService.savePost(boardDto);
-//
-//        // Then
-//        assertEquals(boardEntity.getName(), boardDto.getName());
-//        assertEquals(boardEntity.getSubject(), boardDto.getSubject());
-//        assertEquals(1, savedBoardNum);
-//        assertNotNull(savedBoardNum, "게시물 번호는 null이 아니어야 합니다.");
-//        // 실제로 디비에 저장되지 않기 때문에 setNum 하지 않으면 num은 null 값을 가짐
-//    }
+    @Test
+    @DisplayName("글 생성하기")
+    void savePostTest() {
+        // given
+        BoardDto boardDto = new BoardDto();
+        boardDto.setNum(1);
+        boardDto.setName("yerin");
+        boardDto.setSubject("title");
+        boardDto.setContent("content");
+
+        String userid = "yerin";
+        Member member =  Member.builder()
+                .userid(userid)
+                .build();
+
+        Board boardEntity = Board.builder()
+                .num(boardDto.getNum())
+                .name(boardDto.getName())
+                .subject(boardDto.getSubject())
+                .content(boardDto.getContent())
+                .member(member)
+                .build();
+
+        when(memberRepository.findByUserid(anyString())).thenReturn(Optional.of(member));
+        when(boardRepository.save(any())).thenAnswer(invocation -> {
+            // 게시물이 저장되면 게시물 번호를 반환
+            Board savedBoard = invocation.getArgument(0);
+            savedBoard.setNum(1);
+            return savedBoard;
+        });
+
+        // When
+        Integer savedBoardNum = boardService.savePost(boardDto, userid);
+
+        // Then
+        verify(memberRepository, times(1)).findByUserid(userid);
+        verify(boardRepository, times(1)).save(any(Board.class));
+        assertEquals(boardEntity.getNum(), savedBoardNum);
+    }
 
     @Test
     @DisplayName("모든 게시글 불러오기")

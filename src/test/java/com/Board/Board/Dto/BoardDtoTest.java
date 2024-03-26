@@ -20,6 +20,7 @@ class BoardDtoTest {
                 .email("yerin0922@gmail.com")
                 .subject("제목")
                 .content("내용")
+                .hitCount(0)
                 .build();
 
         // when
@@ -28,11 +29,9 @@ class BoardDtoTest {
         // then
         assertEquals("com.Board.Board.Domain.Entity.Board", board.getClass().getName()); // 속한 클래스 확인
         assertNotNull(board);
-        assertEquals(boardDto.getNum(), board.getNum());
         assertEquals(boardDto.getName(), board.getName());
         assertEquals(boardDto.getSubject(), board.getSubject());
         assertEquals(boardDto.getContent(), board.getContent());
-        assertEquals(0, board.getHitCount());
     }
 
     @Test

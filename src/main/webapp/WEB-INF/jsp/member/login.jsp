@@ -8,11 +8,11 @@
         <div class="card-header">로그인</div>
         <div class="card-body text-center">
             <form id="loginForm" action="/auth/login" method="post">
-                <% if (request.getParameter("error") != null) { %>
-                <div class="alert alert-danger">
-                    사용자ID 또는 비밀번호를 확인해 주세요.
-                </div>
-                <% } %>
+<%--                <% if (request.getParameter("error") != null) { %>--%>
+<%--                <div class="alert alert-danger">--%>
+<%--                    사용자ID 또는 비밀번호를 확인해 주세요.--%>
+<%--                </div>--%>
+<%--                <% } %>--%>
                 <div class="form-group">
                     <div class="form-floating mb-3">
                         <input type="text" name="username" class="form-control" id="floatingUsername" autofocus="autofocus">

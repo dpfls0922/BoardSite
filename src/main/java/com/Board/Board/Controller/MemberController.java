@@ -80,7 +80,7 @@ public class MemberController {
     }
 
     @PostMapping("/update")
-    public String updateUser(MemberDto memberUpdatedDto, Errors errors, Model model){
+    public String updateUser(MemberDto memberUpdatedDto, Errors errors, Model model, HttpServletResponse response){
         if (errors.hasErrors()) {
             model.addAttribute("member", memberUpdatedDto);
             memberService.messageHandling(errors, model);
@@ -88,7 +88,7 @@ public class MemberController {
         }
 
         model.addAttribute("member", memberUpdatedDto);
-        memberService.updateMember(memberUpdatedDto);
+        memberService.updateMember(memberUpdatedDto, response);
         return "member/profile";
     }
 
@@ -99,13 +99,9 @@ public class MemberController {
 
     @PostMapping("/withdrawal")
     public String withdrawal(@RequestParam String password, Model model, HttpServletRequest request, HttpServletResponse response) {
-        boolean result = memberService.withdrawal(checkSession(), password);
+        boolean result = memberService.withdrawal(checkSession(), password, request, response);
 
         if (result) {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth != null) {
-                new SecurityContextLogoutHandler().logout(request, response, auth);
-            }
             return "redirect:/list";
         } else {
             model.addAttribute("wrongPassword", "비밀번호가 일치하지 않습니다");

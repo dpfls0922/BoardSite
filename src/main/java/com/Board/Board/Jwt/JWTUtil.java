@@ -39,7 +39,6 @@ public class JWTUtil {
     }
 
     public String createJwt(String username, String role) {
-        System.out.println(username);
         return Jwts.builder()
                 .claim("username", username)
                 .claim("role", role)

@@ -34,9 +34,6 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
-    public void updateUserEmail(String email) {
-        this.email = email;
-    }
     public void updateUsername(String username) {
         this.username = username;
     }

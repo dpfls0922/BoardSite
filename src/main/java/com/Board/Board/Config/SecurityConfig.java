@@ -1,6 +1,10 @@
 package com.Board.Board.Config;
 
+import com.Board.Board.Jwt.JWTExceptionFilter;
 import com.Board.Board.Jwt.*;
+
+import com.Board.Board.Handler.CustomAccessDeniedHandler;
+import com.Board.Board.Handler.CustomAuthenticationEntryPoint;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +17,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -26,6 +29,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final JWTUtil jwtUtil;
 
     @Bean
@@ -50,17 +55,19 @@ public class SecurityConfig {
 
         http
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class)
+                .addFilterBefore(new JWTExceptionFilter(jwtUtil), JWTFilter.class)
                 .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/user/signup").permitAll()
-                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/admin/*").hasRole("ADMIN")
                         .requestMatchers("/list/edit/**", "/list/remove/**", "/register/**", "/edit/**", "/user/**").hasRole("USER")
                         .requestMatchers("/**", "/list", "/list/{id}", "/css/**", "/js/**").permitAll()
                         .anyRequest().authenticated()
                 );
+
         http
                 .formLogin((formLogin) -> formLogin
                         .loginPage("/user/login")
@@ -69,7 +76,15 @@ public class SecurityConfig {
                 .logout((logout) -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
                         .logoutSuccessUrl("/list")
+                        .deleteCookies("jwt")
                         .invalidateHttpSession(true)
+                );
+
+        http
+                .exceptionHandling((exceptionHandling) ->
+                        exceptionHandling
+                                .authenticationEntryPoint(customAuthenticationEntryPoint)
+                                .accessDeniedHandler(customAccessDeniedHandler)
                 );
 
         return http.build();

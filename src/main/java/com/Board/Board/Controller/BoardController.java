@@ -2,8 +2,10 @@ package com.Board.Board.Controller;
 
 import com.Board.Board.Domain.Entity.Board;
 import com.Board.Board.Dto.BoardDto;
+import com.Board.Board.Jwt.JWTUtil;
 import com.Board.Board.Service.BoardService;
 
+import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.security.core.context.SecurityContextHolder;

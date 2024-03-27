@@ -82,12 +82,6 @@ public class MemberController {
 
     @PostMapping("/update")
     public String updateUser(MemberDto memberUpdatedDto, Errors errors, Model model, HttpServletResponse response){
-        if (errors.hasErrors()) {
-            model.addAttribute("member", memberUpdatedDto);
-            memberService.messageHandling(errors, model);
-            return "member/updateProfile";
-        }
-
         model.addAttribute("member", memberUpdatedDto);
         memberService.updateMember(memberUpdatedDto, response);
         return "member/profile";
@@ -110,7 +104,12 @@ public class MemberController {
         }
     }
     private static String checkSession() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ""; // 세션이 없는 경우 빈 문자열 반환
+        }
+
+        Object principal = authentication.getPrincipal();
         String userid = "";
 
         if (principal instanceof UserDetails) {

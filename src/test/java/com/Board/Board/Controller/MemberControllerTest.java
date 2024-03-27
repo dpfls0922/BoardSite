@@ -1,9 +1,11 @@
 package com.Board.Board.Controller;
 
+import com.Board.Board.Dto.MemberDto;
 import com.Board.Board.Dto.MemberSignupDto;
 import com.Board.Board.Jwt.JWTUtil;
 import com.Board.Board.Service.MemberService;
 import com.Board.Board.Validator.CheckSignupValidator;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,6 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -27,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockBean(JpaMetamodelMappingContext.class)
 @WebMvcTest(MemberController.class)
 @DisplayName("MemberController 테스트")
-@WithMockUser(username = "user", roles = "USER")
 class MemberControllerTest {
 
     @Autowired
@@ -49,6 +51,7 @@ class MemberControllerTest {
 
     @Nested
     @DisplayName("회원가입 테스트")
+    @WithMockUser(username = "user", roles = "USER")
     class signupTest {
         @Test
         @DisplayName("Get - 회원가입 페이지 불러오기")
@@ -97,4 +100,122 @@ class MemberControllerTest {
 
     }
 
+    @Nested
+    @DisplayName("로그인 테스트 - Get")
+    public class loginTest {
+        @Test
+        @DisplayName("인증된 사용자가 로그인 페이지 요청 시 리다이렉트")
+        @WithMockUser(username = "user", roles = "USER")
+        void loginPageTest() throws Exception {
+            mockMvc.perform(get("/user/login"))
+                    .andExpect(status().is3xxRedirection())
+                    .andExpect(redirectedUrl("/list"));
+        }
+
+        @Test
+        @DisplayName("인증되지 않은 사용자가 로그인 페이지 요청 시 정상 응답")
+        void loginWithoutSessionTest() throws Exception {
+            mockMvc.perform(get("/user/login"))
+                    .andExpect(status().isOk())
+                    .andExpect(view().name("member/login"));
+        }
+    }
+
+    @Test
+    @DisplayName("마이페이지 불러오기")
+    @WithMockUser(username = "user", roles = "USER")
+    void mypageTest() throws Exception {
+        String userid = "user";
+        MemberDto memberDto = new MemberDto();
+        memberDto.setUserid(userid);
+
+        when(memberService.findMember(userid)).thenReturn(memberDto);
+
+        mockMvc.perform(get("/user/profile"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("member/profile"))
+                .andExpect(model().attributeExists("member"))
+                .andExpect(model().attribute("member", memberDto));
+    }
+
+    @Nested
+    @DisplayName("회원 정보 수정 페이지 테스트")
+    @WithMockUser(username = "user", roles = "USER")
+    class UpdateUserTest {
+
+        @Test
+        @DisplayName("Get - 회원 정보 수정 페이지 불러오기")
+        void updateUserTest() throws Exception {
+            String userid = "user";
+            MemberDto memberDto = new MemberDto();
+            memberDto.setUserid(userid);
+
+            when(memberService.findMember(userid)).thenReturn(memberDto);
+
+            mockMvc.perform(get("/user/update"))
+                    .andExpect(status().isOk())
+                    .andExpect(view().name("member/updateProfile"))
+                    .andExpect(model().attributeExists("member"))
+                    .andExpect(model().attribute("member", memberDto));
+        }
+
+        @Test
+        @DisplayName("Post - 회원 정보 수정 성공")
+        void updateUserSuccessTest() throws Exception {
+            String userid = "user";
+            MemberDto memberDto = new MemberDto();
+            memberDto.setUserid(userid);
+
+            when(memberService.updateMember(any(MemberDto.class), any(HttpServletResponse.class))).thenReturn(1L);
+
+            mockMvc.perform(post("/user/update")
+                            .flashAttr("memberUpdatedDto", memberDto)
+                            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                            .with(csrf()))
+                    .andExpect(status().isOk())
+                    .andExpect(view().name("member/profile"))
+                    .andExpect(model().attributeExists("member"))
+                    .andExpect(model().attribute("memberUpdatedDto", memberDto));
+        }
+    }
+
+    @Nested
+    @DisplayName("회원탈퇴 테스트")
+    @WithMockUser(username = "user", roles = "USER")
+    public class withdrawalTest {
+        @Test
+        @DisplayName("Post - 회원 탈퇴 성공")
+        void withdrawalSuccessTest() throws Exception {
+            String password = "password";
+
+            when(memberService.withdrawal(any(), any(), any(), any())).thenReturn(true);
+
+            mockMvc.perform(post("/user/withdrawal")
+                            .param("password", password)
+                            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                            .with(csrf()))
+                    .andExpect(status().is3xxRedirection())
+                    .andExpect(redirectedUrl("/list"));
+
+            verify(memberService).withdrawal(any(), any(), any(), any());
+        }
+
+        @Test
+        @DisplayName("Post - 회원 탈퇴 실패")
+        void withdrawalFailureTest() throws Exception {
+            String password = "password";
+
+            when(memberService.withdrawal(any(), any(), any(), any())).thenReturn(false);
+
+            mockMvc.perform(post("/user/withdrawal")
+                            .param("password", password)
+                            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                            .with(csrf()))
+                    .andExpect(status().isOk())
+                    .andExpect(view().name("member/withdrawal"))
+                    .andExpect(model().attributeExists("wrongPassword"));
+
+            verify(memberService).withdrawal(any(), any(), any(), any());
+        }
+    }
 }

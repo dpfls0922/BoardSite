@@ -37,9 +37,6 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
-    @OneToMany(mappedBy = "member")
-    private List<Board> boards = new ArrayList<>();
-
     public void updateUsername(String username) {
         this.username = username;
     }

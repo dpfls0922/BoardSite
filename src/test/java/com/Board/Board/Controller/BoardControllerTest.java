@@ -67,7 +67,7 @@ class BoardControllerTest {
     @Test
     @DisplayName("글 상세보기")
     void detailTest() throws Exception {
-        int boardId = 1;
+        Long boardId = 1L;
         BoardDto boardDto = new BoardDto();
         when(boardService.getBoard(boardId)).thenReturn(boardDto);
 
@@ -109,10 +109,10 @@ class BoardControllerTest {
         @DisplayName("Get")
         @Test
         void editGet() throws Exception {
-            int boardId = 1;
+            Long boardId = 1L;
             BoardDto boardDto = new BoardDto();
-            boardDto.setNum(boardId);
-            boardDto.setName("user");
+            boardDto.setId(boardId);
+            boardDto.setWriter("user");
 
             when(boardService.getBoard(boardId)).thenReturn(boardDto);
 
@@ -125,7 +125,7 @@ class BoardControllerTest {
         @Test
         @DisplayName("Put")
         void editPut() throws Exception {
-            int boardId = 1;
+            Long boardId = 1L;
             String loggedInUserId = "user";
 
             mockMvc.perform(put("/list/edit/{id}", boardId)
@@ -143,7 +143,7 @@ class BoardControllerTest {
     @Test
     @DisplayName("글 삭제하기")
     void deleteBoardTest() throws Exception {
-        int boardId = 1;
+        Long boardId = 1L;
         String loggedInUserId = "user";
         String postUserId = "user";
 

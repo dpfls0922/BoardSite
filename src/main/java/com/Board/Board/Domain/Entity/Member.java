@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.ArrayList;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -33,6 +36,9 @@ public class Member {
     @Column
     @Enumerated(EnumType.STRING)
     private MemberRole role;
+
+    @OneToMany(mappedBy = "member")
+    private List<Board> boards = new ArrayList<>();
 
     public void updateUsername(String username) {
         this.username = username;

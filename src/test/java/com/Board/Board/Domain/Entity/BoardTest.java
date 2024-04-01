@@ -16,7 +16,7 @@ class BoardTest {
         // given
         Board board = new Board();
         // when
-        board.setNum(1);
+        board.setId(1);
         board.setName("yerin");
         board.setSubject("title");
         board.setContent("content");
@@ -24,7 +24,7 @@ class BoardTest {
         board.setCreatedDate(LocalDateTime.now());
         board.setUpdatedDate(LocalDateTime.now());
         // then
-        assertEquals(1, board.getNum());
+        assertEquals(1, board.getId());
         assertEquals("yerin", board.getName());
         assertEquals("title", board.getSubject());
         assertEquals("content", board.getContent());
@@ -55,7 +55,7 @@ class BoardTest {
         LocalDateTime currentDateTime = LocalDateTime.now();
         Board board = new Board();
         // when
-        board.setNum(1);
+        board.setId(1);
         board.setName("yerin");
         board.setCreatedDate(currentDateTime);
         board.setUpdatedDate(currentDateTime);
@@ -70,12 +70,12 @@ class BoardTest {
     void builder() {
         // given, when
         Board board = Board.builder().
-            num(1).
+            id(1).
             name("yerin").
             subject("title").
             content("content").build();
         // then
-        assertEquals(1, board.getNum());
+        assertEquals(1, board.getId());
         assertEquals("yerin", board.getName());
         assertEquals("title", board.getSubject());
         assertEquals("content", board.getContent());

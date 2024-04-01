@@ -11,8 +11,8 @@
             <div class="col-md-6">
                 <form action="/register" method="post">
                     <div class="form-group mb-3">
-                        <label for="name"> 작성자 </label>
-                        <input type="text" class="form-control" id="name" name="name" value="<%=name%>" readonly>
+                        <label for="writer"> 작성자 </label>
+                        <input type="text" class="form-control" id="writer" name="writer" value="<%=name%>" readonly>
                     </div>
                     <div class="form-group mb-3">
                         <label for="subject">제목</label>
@@ -24,7 +24,7 @@
                     </div>
                     <div class="text-center mt-3">
                         <a href="/list" role="button" class="btn btn-secondary">취소</a>
-                        <input class="btn btn-primary" type="submit"  role="button" value="등록">
+                        <input class="btn btn-primary" type="submit" role="button" value="등록">
                     </div>
                 </form>
             </div>

@@ -37,12 +37,12 @@
                         <tr>
                             <td><%= index-- %></td>
                             <td>
-                                <a href="/list/<%=board.getNum()%>"><%=board.getSubject() %></a>
+                                <a href="/list/<%=board.getId()%>"><%=board.getSubject() %></a>
                             </td>
-                            <% if(board.getName().equals("(탈퇴한 회원)")) { %>
-                            <td style="color: grey;"><%= board.getName() %></td>
+                            <% if(board.getWriter() != null && board.getWriter().equals("(탈퇴한 회원)")) { %>
+                            <td style="color: grey;"><%= board.getWriter() %></td>
                             <% } else { %>
-                            <td><%= board.getName() %></td>
+                            <td><%= board.getWriter() %></td>
                             <% } %>
                             <td>
                                 <%=board.getCreatedDate().format(formatter)%>

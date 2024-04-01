@@ -15,8 +15,8 @@ class BoardDtoTest {
     void toEntity() {
         // given
         BoardDto boardDto = BoardDto.builder()
-                .num(1)
-                .name("이예린")
+                .id(1L)
+                .writer("이예린")
                 .email("yerin0922@gmail.com")
                 .subject("제목")
                 .content("내용")
@@ -29,7 +29,7 @@ class BoardDtoTest {
         // then
         assertEquals("com.Board.Board.Domain.Entity.Board", board.getClass().getName()); // 속한 클래스 확인
         assertNotNull(board);
-        assertEquals(boardDto.getName(), board.getName());
+        assertEquals(boardDto.getWriter(), board.getWriter());
         assertEquals(boardDto.getSubject(), board.getSubject());
         assertEquals(boardDto.getContent(), board.getContent());
     }
@@ -38,7 +38,7 @@ class BoardDtoTest {
     @DisplayName("builder 테스트")
     void builder() {
         // given
-        int num = 1;
+        Long id = 1L;
         String name = "이예린";
         String email = "yerin0922@gmail.com";
         String subject = "제목";
@@ -46,8 +46,8 @@ class BoardDtoTest {
         int hitCount = 0;
         // when
         BoardDto boardDto = BoardDto.builder()
-                .num(num)
-                .name(name)
+                .id(id)
+                .writer(name)
                 .email(email)
                 .subject(subject)
                 .content(content)
@@ -56,8 +56,8 @@ class BoardDtoTest {
         // then
         assertEquals("com.Board.Board.Dto.BoardDto", boardDto.getClass().getName()); // 속한 클래스 확인
         assertNotNull(boardDto);
-        assertEquals(num, boardDto.getNum());
-        assertEquals(name, boardDto.getName());
+        assertEquals(id, boardDto.getId());
+        assertEquals(name, boardDto.getWriter());
         assertEquals(email, boardDto.getEmail());
         assertEquals(subject, boardDto.getSubject());
         assertEquals(content, boardDto.getContent());

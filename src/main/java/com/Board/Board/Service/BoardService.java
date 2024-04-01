@@ -24,21 +24,21 @@ public class BoardService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Integer savePost(BoardDto boardDto, String userid){
+    public Long savePost(BoardDto boardDto, String userid){
         Member member = memberRepository.findByUserid(userid)
                 .orElseThrow(() -> new UsernameNotFoundException("아이디가 존재하지 않습니다"));
 
         Board result = Board.builder()
                 .subject(boardDto.getSubject())
                 .content(boardDto.getContent())
-                .name(boardDto.getName())
+                .writer(boardDto.getWriter())
                 .hitcount(0)
                 .member(member)
                 .build();
 
         boardRepository.save(result);
 
-        return result.getNum();
+        return result.getId();
     }
     @Transactional
     public List<Board> getAllBoards() {
@@ -51,8 +51,8 @@ public class BoardService {
         return boards;
     }
     @Transactional
-    public BoardDto  getBoard(int num) {
-        Optional<Board> optionalBoard = boardRepository.findById(num);
+    public BoardDto getBoard(Long id) {
+        Optional<Board> optionalBoard = boardRepository.findById(id);
         if (optionalBoard.isEmpty()) {
             throw new EntityNotFoundException("존재하지 않는 게시글입니다");
         }
@@ -60,8 +60,8 @@ public class BoardService {
         Board board = optionalBoard.get();
 
         BoardDto boardDto = BoardDto.builder()
-                .num(board.getNum())
-                .name(board.getName())
+                .id(board.getId())
+                .writer(board.getWriter())
                 .subject(board.getSubject())
                 .content(board.getContent())
                 .hitCount(board.getHitCount())
@@ -72,31 +72,31 @@ public class BoardService {
     }
 
     @Transactional
-    public Integer updatePost(Integer num, BoardDto boardDto){
-        Board board = boardRepository.findById(num).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글입니다"));
+    public Long updatePost(Long id, BoardDto boardDto){
+        Board board = boardRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글입니다"));
 
         board.update(boardDto.getSubject(), boardDto.getContent());
         boardRepository.save(board);
 
-        return board.getNum();
+        return board.getId();
     }
     @Transactional
-    public void increaseHitCount(int num) {
-        Board board = boardRepository.findById(num).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글입니다"));
+    public void increaseHitCount(Long id) {
+        Board board = boardRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글입니다"));
         board.setHitcount(board.getHitCount() + 1);
         boardRepository.save(board);
     }
 
     @Transactional
-    public void deletePost(int num) {
-        boardRepository.deleteById(num);
+    public void deletePost(Long id) {
+        boardRepository.deleteById(id);
     }
 
     @Transactional
-    public String findUserIdByPostId(int num) {
-        Board board = boardRepository.findById(num).orElse(null);
+    public String findUserIdByPostId(Long id) {
+        Board board = boardRepository.findById(id).orElse(null);
         if (board != null) {
-            return board.getName();
+            return board.getWriter();
         } else {
             return null;
         }

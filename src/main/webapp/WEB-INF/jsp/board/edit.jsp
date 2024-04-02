@@ -26,6 +26,36 @@
                         <input type="text" class="form-control" id="name" name="name" value="<%=board.getWriter() %>">
                     </div>
                     <div class="form-group mb-4">
+                        <label for="content"> 카테고리 </label>
+                        <ul class="list-group list-group-horizontal">
+                            <li class="list-group-item flex-grow-1">
+                                <input class="form-check-input me-1" type="checkbox" value="question" id="1" name="categories" <%= board.getSelectedCategories().contains("question") ? "checked" : "" %>>
+                                <input type="hidden" name="_categories" value="on">
+                                <label class="form-check-label" for="1">질문</label>
+                            </li>
+                            <li class="list-group-item flex-grow-1">
+                                <input class="form-check-input me-1" type="checkbox" value="general" id="2" name="categories" <%= board.getSelectedCategories().contains("general") ? "checked" : "" %>>
+                                <label class="form-check-label" for="2">자유</label>
+                            </li>
+                            <li class="list-group-item flex-grow-1">
+                                <input class="form-check-input me-1" type="checkbox" value="worry" id="3" name="categories" <%= board.getSelectedCategories().contains("worry") ? "checked" : "" %>>
+                                <label class="form-check-label" for="3">고민</label>
+                            </li>
+                            <li class="list-group-item flex-grow-1">
+                                <input class="form-check-input me-1" type="checkbox" value="hobby" id="4" name="categories" <%= board.getSelectedCategories().contains("hobby") ? "checked" : "" %>>
+                                <label class="form-check-label" for="4">취미</label>
+                            </li>
+                            <li class="list-group-item flex-grow-1">
+                                <input class="form-check-input me-1" type="checkbox" value="travel" id="5" name="categories" <%= board.getSelectedCategories().contains("travel") ? "checked" : "" %>>
+                                <label class="form-check-label" for="5">여행</label>
+                            </li>
+                            <li class="list-group-item flex-grow-1">
+                                <input class="form-check-input me-1" type="checkbox" value="study" id="6" name="categories" <%= board.getSelectedCategories().contains("study") ? "checked" : "" %>>
+                                <label class="form-check-label" for="6">공부</label>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="form-group mb-4">
                         <label for="content"> 내용 </label>
                         <textarea class="form-control" id="content" name="content" rows="5"><%=board.getContent() %></textarea>
                     </div>

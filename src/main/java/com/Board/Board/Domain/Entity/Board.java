@@ -43,6 +43,9 @@ public class Board {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @OneToMany(mappedBy = "board")
+    private List<BoardCategory> boardCategories = new ArrayList<>();
+
     @CreatedDate
     @Column(name = "created", updatable = false)
     private LocalDateTime createdDate;

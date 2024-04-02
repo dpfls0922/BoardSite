@@ -1,7 +1,10 @@
 package com.Board.Board.Service;
 
+import com.Board.Board.Domain.Entity.Category;
 import com.Board.Board.Domain.Entity.Member;
+import com.Board.Board.Domain.Repository.BoardCategoryRepository;
 import com.Board.Board.Domain.Repository.BoardRepository;
+import com.Board.Board.Domain.Repository.CategoryRepository;
 import com.Board.Board.Domain.Repository.MemberRepository;
 import com.Board.Board.Dto.BoardDto;
 import com.Board.Board.Domain.Entity.Board;
@@ -32,6 +35,10 @@ class BoardServiceTest {
     BoardRepository boardRepository;
     @Mock
     MemberRepository memberRepository;
+    @Mock
+    CategoryRepository categoryRepository;
+    @Mock
+    BoardCategoryRepository boardCategoryRepository;
     @InjectMocks
     BoardService boardService;
 
@@ -41,10 +48,11 @@ class BoardServiceTest {
         // given
         BoardDto boardDto = new BoardDto();
         boardDto.setId(1L);
-        boardDto.setName("yerin");
+        boardDto.setWriter("yerin");
         boardDto.setSubject("title");
         boardDto.setContent("content");
 
+        List<String> categoryNames = Arrays.asList("general", "worry");
         String userid = "yerin";
         Member member =  Member.builder()
                 .userid(userid)
@@ -52,7 +60,7 @@ class BoardServiceTest {
 
         Board boardEntity = Board.builder()
                 .id(boardDto.getId())
-                .name(boardDto.getName())
+                .writer(boardDto.getWriter())
                 .subject(boardDto.getSubject())
                 .content(boardDto.getContent())
                 .member(member)
@@ -65,9 +73,10 @@ class BoardServiceTest {
             savedBoard.setId(1L);
             return savedBoard;
         });
+        when(categoryRepository.findByType(anyString())).thenReturn(Optional.of(new Category()));
 
         // When
-        Long savedBoardId = boardService.savePost(boardDto, userid);
+        Long savedBoardId = boardService.savePost(boardDto, userid, categoryNames);
 
         // Then
         verify(memberRepository, times(1)).findByUserid(userid);
@@ -113,7 +122,7 @@ class BoardServiceTest {
         Long boardId = 1L;
         Board board = new Board();
         board.setId(boardId);
-        board.setName("작성자");
+        board.setWriter("작성자");
         board.setSubject("제목");
         board.setContent("내용");
 
@@ -123,7 +132,7 @@ class BoardServiceTest {
 
         assertNotNull(result);
         assertEquals(boardId, result.getId());
-        assertEquals("작성자", result.getName());
+        assertEquals("작성자", result.getWriter());
         assertEquals("제목", result.getSubject());
         assertEquals("내용", result.getContent());
     }

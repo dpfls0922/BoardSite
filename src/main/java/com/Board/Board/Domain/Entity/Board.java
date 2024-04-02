@@ -9,6 +9,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,10 +25,10 @@ import java.time.LocalDateTime;
 public class Board {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private Integer num;
+    private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "writer")
+    private String writer;
 
     @Column(name = "subject")
     private String subject;
@@ -41,6 +43,9 @@ public class Board {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @OneToMany(mappedBy = "board")
+    private List<BoardCategory> boardCategories = new ArrayList<>();
+
     @CreatedDate
     @Column(name = "created", updatable = false)
     private LocalDateTime createdDate;
@@ -50,9 +55,9 @@ public class Board {
     private LocalDateTime updatedDate;
 
     @Builder
-    public Board(Integer num, String name, String subject, String content) {
-        this.num = num;
-        this.name = name;
+    public Board(Long id, String writer, String subject, String content) {
+        this.id = id;
+        this.writer = writer;
         this.subject = subject;
         this.content = content;
         this.hitcount = 0;

@@ -19,6 +19,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -43,13 +44,12 @@ class BoardControllerTest {
     @MockBean
     private JWTUtil jwtUtil;
 
-
     private List<Board> dummyBoards;
     @BeforeEach
     void beforeEach(){
         dummyBoards = Arrays.asList(
-                new Board(1, "이메일 1", "제목 1", "내용 1"),
-                new Board(2,  "이메일 2", "제목 2", "내용 2")
+                new Board(1L, "이메일 1", "제목 1", "내용 1"),
+                new Board(2L,  "이메일 2", "제목 2", "내용 2")
         );
     }
 
@@ -67,7 +67,7 @@ class BoardControllerTest {
     @Test
     @DisplayName("글 상세보기")
     void detailTest() throws Exception {
-        int boardId = 1;
+        Long boardId = 1L;
         BoardDto boardDto = new BoardDto();
         when(boardService.getBoard(boardId)).thenReturn(boardDto);
 
@@ -95,11 +95,12 @@ class BoardControllerTest {
             mockMvc.perform(post("/register")
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED).with(csrf())  // application/x-www-form-urlencoded
                     .param("title", "새로운 제목")
-                    .param("content", "새로운 내용"))
+                    .param("content", "새로운 내용")
+                    .param("categories", "category1", "category2"))
                     .andExpect(status().is3xxRedirection())             // 리다이렉션 응답 코드
                     .andExpect(redirectedUrl("/list"));
 
-            verify(boardService, times(1)).savePost(any(BoardDto.class), eq("user"));
+            verify(boardService, times(1)).savePost(any(BoardDto.class), eq("user"), eq(Arrays.asList("category1", "category2")));
         }
     }
 
@@ -109,10 +110,10 @@ class BoardControllerTest {
         @DisplayName("Get")
         @Test
         void editGet() throws Exception {
-            int boardId = 1;
+            Long boardId = 1L;
             BoardDto boardDto = new BoardDto();
-            boardDto.setNum(boardId);
-            boardDto.setName("user");
+            boardDto.setId(boardId);
+            boardDto.setWriter("user");
 
             when(boardService.getBoard(boardId)).thenReturn(boardDto);
 
@@ -125,25 +126,26 @@ class BoardControllerTest {
         @Test
         @DisplayName("Put")
         void editPut() throws Exception {
-            int boardId = 1;
+            Long boardId = 1L;
             String loggedInUserId = "user";
 
             mockMvc.perform(put("/list/edit/{id}", boardId)
                             .contentType(MediaType.APPLICATION_FORM_URLENCODED).with(csrf())
                             .param("name", "수정한 작성자")
                             .param("title", "수정한 제목")
-                            .param("content", "수정한 내용"))
+                            .param("content", "수정한 내용")
+                            .param("categories", "category1", "category2"))
                     .andExpect(status().is3xxRedirection())
                     .andExpect(redirectedUrl("/list/1"));
 
-            verify(boardService, times(1)).updatePost(eq(boardId), any(BoardDto.class));
+            verify(boardService, times(1)).updatePost(eq(boardId), any(BoardDto.class), eq(Arrays.asList("category1", "category2")));
         }
     }
 
     @Test
     @DisplayName("글 삭제하기")
     void deleteBoardTest() throws Exception {
-        int boardId = 1;
+        Long boardId = 1L;
         String loggedInUserId = "user";
         String postUserId = "user";
 

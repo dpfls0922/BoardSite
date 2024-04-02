@@ -1,8 +1,12 @@
 package com.Board.Board.Service;
 
+import com.Board.Board.Domain.Entity.Category;
 import com.Board.Board.Domain.Entity.Member;
 import com.Board.Board.Domain.Entity.Board;
+import com.Board.Board.Domain.Entity.BoardCategory;
+import com.Board.Board.Domain.Repository.BoardCategoryRepository;
 import com.Board.Board.Domain.Repository.BoardRepository;
+import com.Board.Board.Domain.Repository.CategoryRepository;
 import com.Board.Board.Domain.Repository.MemberRepository;
 import com.Board.Board.Dto.BoardDto;
 
@@ -15,31 +19,41 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
+    private final CategoryRepository categoryRepository;
+    private final BoardCategoryRepository boardCategoryRepository;
 
     @Transactional
-    public Integer savePost(BoardDto boardDto, String userid){
+    public Long savePost(BoardDto boardDto, String userid, List<String> categoryNames){
         Member member = memberRepository.findByUserid(userid)
                 .orElseThrow(() -> new UsernameNotFoundException("아이디가 존재하지 않습니다"));
 
-        Board result = Board.builder()
+        Board board = Board.builder()
                 .subject(boardDto.getSubject())
                 .content(boardDto.getContent())
-                .name(boardDto.getName())
+                .writer(boardDto.getWriter())
                 .hitcount(0)
                 .member(member)
                 .build();
 
-        boardRepository.save(result);
+        List<BoardCategory> boardCategories = valiateAndAddCategoriesToList(categoryNames, board);
+        board.setBoardCategories(boardCategories);
+        boardRepository.save(board);
 
-        return result.getNum();
+        for (BoardCategory boardCategory : boardCategories) {
+            boardCategoryRepository.save(boardCategory);
+        }
+        return board.getId();
     }
+
     @Transactional
     public List<Board> getAllBoards() {
         return boardRepository.findAll();
@@ -51,54 +65,73 @@ public class BoardService {
         return boards;
     }
     @Transactional
-    public BoardDto  getBoard(int num) {
-        Optional<Board> optionalBoard = boardRepository.findById(num);
-        if (optionalBoard.isEmpty()) {
-            throw new EntityNotFoundException("존재하지 않는 게시글입니다");
-        }
-
-        Board board = optionalBoard.get();
+    public BoardDto getBoard(Long id) {
+        Board board = boardRepository.findById(id).orElseThrow(()
+                -> new EntityNotFoundException("존재하지 않는 게시글입니다"));
 
         BoardDto boardDto = BoardDto.builder()
-                .num(board.getNum())
-                .name(board.getName())
+                .id(board.getId())
+                .writer(board.getWriter())
                 .subject(board.getSubject())
                 .content(board.getContent())
                 .hitCount(board.getHitCount())
                 .createdDate(board.getCreatedDate())
                 .updatedDate(board.getUpdatedDate())
                 .build();
+        boardDto.setSelectedCategories(board.getBoardCategories().stream().map(BoardCategory::getCategory).map(Category::getType).collect(Collectors.toList()));
+
         return boardDto;
     }
 
     @Transactional
-    public Integer updatePost(Integer num, BoardDto boardDto){
-        Board board = boardRepository.findById(num).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글입니다"));
-
+    public Long updatePost(Long id, BoardDto boardDto, List<String> categoryNames){
+        Board board = boardRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글입니다"));
         board.update(boardDto.getSubject(), boardDto.getContent());
+
+        board.getBoardCategories().clear();
+        List<BoardCategory> boardCategories = valiateAndAddCategoriesToList(categoryNames, board);
+        board.getBoardCategories().addAll(boardCategories);
         boardRepository.save(board);
 
-        return board.getNum();
+        boardCategoryRepository.deleteByBoard(board);
+        for (BoardCategory boardCategory : boardCategories) {
+            boardCategoryRepository.save(boardCategory);
+        }
+        return board.getId();
     }
+
     @Transactional
-    public void increaseHitCount(int num) {
-        Board board = boardRepository.findById(num).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글입니다"));
+    public void increaseHitCount(Long id) {
+        Board board = boardRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글입니다"));
         board.setHitcount(board.getHitCount() + 1);
         boardRepository.save(board);
     }
 
     @Transactional
-    public void deletePost(int num) {
-        boardRepository.deleteById(num);
+    public void deletePost(Long id) {
+        Board board = boardRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 게시글입니다"));
+        boardCategoryRepository.deleteByBoard(board);
+        boardRepository.deleteById(id);
     }
 
     @Transactional
-    public String findUserIdByPostId(int num) {
-        Board board = boardRepository.findById(num).orElse(null);
+    public String findUserIdByPostId(Long id) {
+        Board board = boardRepository.findById(id).orElse(null);
         if (board != null) {
-            return board.getName();
+            return board.getWriter();
         } else {
             return null;
         }
+    }
+
+    private List<BoardCategory> valiateAndAddCategoriesToList(List<String> categoryNames, Board board) {
+        List<BoardCategory> boardCategories = new ArrayList<>();
+
+        for (String categoryName : categoryNames) {
+            Category category = categoryRepository.findByType(categoryName)
+                    .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다: " + categoryName));
+            boardCategories.add(new BoardCategory(board, category));
+        }
+        return boardCategories;
     }
 }

@@ -51,7 +51,6 @@ class MemberControllerTest {
 
     @Nested
     @DisplayName("회원가입 테스트")
-    @WithMockUser(username = "user", roles = "USER")
     class signupTest {
         @Test
         @DisplayName("Get - 회원가입 페이지 불러오기")
@@ -97,7 +96,6 @@ class MemberControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(view().name("member/signup"));
         }
-
     }
 
     @Nested

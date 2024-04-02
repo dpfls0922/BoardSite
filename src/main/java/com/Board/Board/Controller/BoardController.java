@@ -2,10 +2,9 @@ package com.Board.Board.Controller;
 
 import com.Board.Board.Domain.Entity.Board;
 import com.Board.Board.Dto.BoardDto;
-import com.Board.Board.Jwt.JWTUtil;
 import com.Board.Board.Service.BoardService;
 
-import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ import org.slf4j.LoggerFactory;
 public class BoardController {
     private static final Logger logger = LoggerFactory.getLogger(BoardController.class);
 
-    private BoardService boardService;
+    private final BoardService boardService;
     @Autowired
     public BoardController(BoardService boardService){
         this.boardService = boardService;
@@ -48,9 +49,9 @@ public class BoardController {
      * @return 게시글 상세보기 페이지
      */
     @GetMapping("/list/{id}")
-    public String detail(@PathVariable("id") int num, Model model) {
-        boardService.increaseHitCount(num);
-        BoardDto boardDto = boardService.getBoard(num);
+    public String detail(@PathVariable("id") Long id, Model model) {
+        boardService.increaseHitCount(id);
+        BoardDto boardDto = boardService.getBoard(id);
 
         model.addAttribute("board", boardDto);
         model.addAttribute("userid", checkSession());
@@ -73,8 +74,10 @@ public class BoardController {
      * @return 게시글 목록 페이지
      */
     @PostMapping("/register")
-    public String register(BoardDto boardDto){
-        boardService.savePost(boardDto, checkSession());
+    public String register(HttpServletRequest request, BoardDto boardDto){
+        String[] categories = request.getParameterValues("categories");
+        List<String> categoryList = Arrays.asList(categories != null ? categories : new String[0]);
+        boardService.savePost(boardDto, checkSession(), categoryList);
         return "redirect:/list";
     }
 
@@ -84,10 +87,10 @@ public class BoardController {
      * @return 게시글 수정 페이지
      */
     @GetMapping("/list/edit/{id}")
-    public String edit(@PathVariable("id") int num, Model model) {
-        BoardDto boardDto = boardService.getBoard(num);
+    public String edit(@PathVariable("id") Long id, Model model) {
+        BoardDto boardDto = boardService.getBoard(id);
 
-    if (!boardDto.getName().equals(checkSession())) {
+        if (!boardDto.getWriter().equals(checkSession())) {
             return "redirect:/list";
         }
 
@@ -102,8 +105,11 @@ public class BoardController {
      * @return 게시글 디테일 페이지
      */
     @PutMapping("/list/edit/{id}")
-    public String edit(@PathVariable("id") int num, @ModelAttribute BoardDto boardDto) {
-        boardService.updatePost(num, boardDto);
+    public String edit(@PathVariable("id") Long id, @ModelAttribute BoardDto boardDto, HttpServletRequest request) {
+        String[] categories = request.getParameterValues("categories");
+        List<String> categoryList = Arrays.asList(categories != null ? categories : new String[0]);
+
+        boardService.updatePost(id, boardDto, categoryList);
         return "redirect:/list/{id}";
     }
 
@@ -113,14 +119,14 @@ public class BoardController {
      * @return
      */
     @DeleteMapping("/list/remove/{id}")
-    public String delete(@PathVariable("id") int num) {
+    public String delete(@PathVariable("id") Long id) {
         String loggedInUserid = checkSession();
-        String postUserid = boardService.findUserIdByPostId(num);
+        String postUserid = boardService.findUserIdByPostId(id);
 
         if (!loggedInUserid.equals(postUserid)) {
             return "redirect:/list";
         }
-        boardService.deletePost(num);
+        boardService.deletePost(id);
         return "redirect:/list";
     }
 

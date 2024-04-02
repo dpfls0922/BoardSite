@@ -1,6 +1,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.Board.Board.Domain.Entity.Board" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
+<%@ page import="com.Board.Board.Domain.Entity.BoardCategory" %>
 <%@ page contentType="text/html; charset=UTF-8"%>
 
 <%
@@ -26,6 +27,7 @@
                 <tr>
                     <th>번호</th>
                     <th>제목</th>
+                    <th style="padding-left: 40px;">카테고리</th>
                     <th>작성자</th>
                     <th>작성일</th>
                     <th>조회수</th>
@@ -37,12 +39,19 @@
                         <tr>
                             <td><%= index-- %></td>
                             <td>
-                                <a href="/list/<%=board.getNum()%>"><%=board.getSubject() %></a>
+                                <a href="/list/<%=board.getId()%>"><%=board.getSubject() %></a>
                             </td>
-                            <% if(board.getName().equals("(탈퇴한 회원)")) { %>
-                            <td style="color: grey;"><%= board.getName() %></td>
+                            <td>
+                                <ul>
+                                    <% for (BoardCategory category : board.getBoardCategories()) { %>
+                                    <span class="badge rounded-pill bg-light text-dark"><%= category.getCategory().getDescription() %></span>
+                                    <% } %>
+                                </ul>
+                            </td>
+                            <% if(board.getWriter() != null && board.getWriter().equals("(탈퇴한 회원)")) { %>
+                            <td style="color: grey;"><%= board.getWriter() %></td>
                             <% } else { %>
-                            <td><%= board.getName() %></td>
+                            <td><%= board.getWriter() %></td>
                             <% } %>
                             <td>
                                 <%=board.getCreatedDate().format(formatter)%>

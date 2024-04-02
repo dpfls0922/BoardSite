@@ -9,7 +9,6 @@
     BoardDto board = (BoardDto) request.getAttribute("board");
     String name = (String) request.getAttribute("userid");
     logger.info("Board received in JSP: {}", board);
-    logger.info("Board received in JSP: {}", board.getHitCount());
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 %>
@@ -20,10 +19,10 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">
-                    <% if(board.getName().equals("(탈퇴한 회원)")) { %>
-                    <span style="color: grey;"><%= board.getName() %></span>
+                    <% if(board.getWriter() != null && board.getWriter().equals("(탈퇴한 회원)")) { %>
+                    <span style="color: grey;"><%= board.getWriter() %></span>
                     <% } else { %>
-                    <span><%= board.getName() %></span>
+                    <span><%= board.getWriter() %></span>
                     <% } %>
                 </h5>
 
@@ -41,14 +40,14 @@
                 </div>
             </div>
 
-        <% if (board.getName().equals(name)) {%>
+        <% if (board.getWriter() != null && board.getWriter().equals(name)) {%>
             <div class="row mt-3">
                 <div class="col"></div>
                 <div class="col-auto">
-                    <a class="btn btn-primary" href="/list/edit/<%=board.getNum() %>" role="button">수정</a>
+                    <a class="btn btn-primary" href="/list/edit/<%=board.getId() %>" role="button">수정</a>
                 </div>
                 <div class="col-auto">
-                    <form id="delete-form" action="/list/remove/<%=board.getNum() %>" method="post">
+                    <form id="delete-form" action="/list/remove/<%=board.getId() %>" method="post">
                         <input type="hidden" name="_method" value="delete" />
                         <button id="delete-btn" type="submit" class="btn btn-danger">삭제</button>
                     </form>

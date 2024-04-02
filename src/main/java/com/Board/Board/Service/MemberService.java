@@ -115,7 +115,7 @@ public class MemberService {
         if (passwordEncoder.matches(password, member.getPassword())) {
             List<Board> boards = boardRepository.findByMember(member);
             for (Board board : boards) {
-                board.setName("(탈퇴한 회원)");
+                board.setWriter("(탈퇴한 회원)");
                 board.setMember(null);
             }
             memberRepository.delete(member);

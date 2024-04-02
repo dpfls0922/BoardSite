@@ -153,9 +153,9 @@ class MemberServiceTest {
             assertTrue(result);
             verify(memberRepository, times(1)).delete(member);
             verify(jwtUtil, times(1)).deleteCookie(any(HttpServletRequest.class), any(HttpServletResponse.class), anyString());
-            assertEquals("(탈퇴한 회원)", boards.get(0).getName());
+            assertEquals("(탈퇴한 회원)", boards.get(0).getWriter());
             assertNull(boards.get(0).getMember());
-            assertEquals("(탈퇴한 회원)", boards.get(1).getName());
+            assertEquals("(탈퇴한 회원)", boards.get(1).getWriter());
             assertNull(boards.get(1).getMember());
         }
 

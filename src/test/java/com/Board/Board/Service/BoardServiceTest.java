@@ -1,7 +1,10 @@
 package com.Board.Board.Service;
 
+import com.Board.Board.Domain.Entity.Category;
 import com.Board.Board.Domain.Entity.Member;
+import com.Board.Board.Domain.Repository.BoardCategoryRepository;
 import com.Board.Board.Domain.Repository.BoardRepository;
+import com.Board.Board.Domain.Repository.CategoryRepository;
 import com.Board.Board.Domain.Repository.MemberRepository;
 import com.Board.Board.Dto.BoardDto;
 import com.Board.Board.Domain.Entity.Board;
@@ -32,6 +35,10 @@ class BoardServiceTest {
     BoardRepository boardRepository;
     @Mock
     MemberRepository memberRepository;
+    @Mock
+    CategoryRepository categoryRepository;
+    @Mock
+    BoardCategoryRepository boardCategoryRepository;
     @InjectMocks
     BoardService boardService;
 
@@ -40,19 +47,20 @@ class BoardServiceTest {
     void savePostTest() {
         // given
         BoardDto boardDto = new BoardDto();
-        boardDto.setNum(1);
-        boardDto.setName("yerin");
+        boardDto.setId(1L);
+        boardDto.setWriter("yerin");
         boardDto.setSubject("title");
         boardDto.setContent("content");
 
+        List<String> categoryNames = Arrays.asList("general", "worry");
         String userid = "yerin";
         Member member =  Member.builder()
                 .userid(userid)
                 .build();
 
         Board boardEntity = Board.builder()
-                .num(boardDto.getNum())
-                .name(boardDto.getName())
+                .id(boardDto.getId())
+                .writer(boardDto.getWriter())
                 .subject(boardDto.getSubject())
                 .content(boardDto.getContent())
                 .member(member)
@@ -62,17 +70,18 @@ class BoardServiceTest {
         when(boardRepository.save(any())).thenAnswer(invocation -> {
             // 게시물이 저장되면 게시물 번호를 반환
             Board savedBoard = invocation.getArgument(0);
-            savedBoard.setNum(1);
+            savedBoard.setId(1L);
             return savedBoard;
         });
+        when(categoryRepository.findByType(anyString())).thenReturn(Optional.of(new Category()));
 
         // When
-        Integer savedBoardNum = boardService.savePost(boardDto, userid);
+        Long savedBoardId = boardService.savePost(boardDto, userid, categoryNames);
 
         // Then
         verify(memberRepository, times(1)).findByUserid(userid);
         verify(boardRepository, times(1)).save(any(Board.class));
-        assertEquals(boardEntity.getNum(), savedBoardNum);
+        assertEquals(boardEntity.getId(), savedBoardId);
     }
 
     @Test
@@ -94,8 +103,8 @@ class BoardServiceTest {
     void getAllBoardsReversed() {
         Board board1 = new Board();
         Board board2 = new Board();;
-        board1.setNum(1);
-        board2.setNum(2);
+        board1.setId(1L);
+        board2.setId(2L);
 
         when(boardRepository.findAll()).thenReturn(Arrays.asList(board1, board2));
 
@@ -110,10 +119,10 @@ class BoardServiceTest {
     @Test
     @DisplayName("한 개의 게시글 불러오기")
     void getBoard() {
-        int boardId = 1;
+        Long boardId = 1L;
         Board board = new Board();
-        board.setNum(boardId);
-        board.setName("작성자");
+        board.setId(boardId);
+        board.setWriter("작성자");
         board.setSubject("제목");
         board.setContent("내용");
 
@@ -122,8 +131,8 @@ class BoardServiceTest {
         BoardDto result = boardService.getBoard(boardId);
 
         assertNotNull(result);
-        assertEquals(boardId, result.getNum());
-        assertEquals("작성자", result.getName());
+        assertEquals(boardId, result.getId());
+        assertEquals("작성자", result.getWriter());
         assertEquals("제목", result.getSubject());
         assertEquals("내용", result.getContent());
     }
@@ -131,9 +140,9 @@ class BoardServiceTest {
     @Test
     @DisplayName("조회수 증가")
     void increaseHitCount() {
-        int boardId = 1;
+        Long boardId = 1L;
         Board board = new Board();
-        board.setNum(boardId);
+        board.setId(boardId);
         board.setHitcount(5);
 
         when(boardRepository.findById(boardId)).thenReturn(Optional.of(board));
@@ -147,7 +156,7 @@ class BoardServiceTest {
     @Test
     @DisplayName("게시글 삭제하기")
     void deletePost() {
-        int boardId = 1;
+        Long boardId = 1L;
 
         when(boardRepository.findById(boardId)).thenReturn(Optional.empty());
 

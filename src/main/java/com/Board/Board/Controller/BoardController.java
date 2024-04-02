@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 @Controller
 public class BoardController {
     private static final Logger logger = LoggerFactory.getLogger(BoardController.class);
-    
+
     private final BoardService boardService;
     @Autowired
     public BoardController(BoardService boardService){
@@ -74,8 +74,10 @@ public class BoardController {
      * @return 게시글 목록 페이지
      */
     @PostMapping("/register")
-    public String register(BoardDto boardDto){
-        boardService.savePost(boardDto, checkSession());
+    public String register(HttpServletRequest request, BoardDto boardDto){
+        String[] categories = request.getParameterValues("categories");
+        List<String> categoryList = Arrays.asList(categories != null ? categories : new String[0]);
+        boardService.savePost(boardDto, checkSession(), categoryList);
         return "redirect:/list";
     }
 
@@ -88,7 +90,7 @@ public class BoardController {
     public String edit(@PathVariable("id") Long id, Model model) {
         BoardDto boardDto = boardService.getBoard(id);
 
-    if (!boardDto.getWriter().equals(checkSession())) {
+        if (!boardDto.getWriter().equals(checkSession())) {
             return "redirect:/list";
         }
 
@@ -103,8 +105,11 @@ public class BoardController {
      * @return 게시글 디테일 페이지
      */
     @PutMapping("/list/edit/{id}")
-    public String edit(@PathVariable("id") Long id, @ModelAttribute BoardDto boardDto) {
-        boardService.updatePost(id, boardDto);
+    public String edit(@PathVariable("id") Long id, @ModelAttribute BoardDto boardDto, HttpServletRequest request) {
+        String[] categories = request.getParameterValues("categories");
+        List<String> categoryList = Arrays.asList(categories != null ? categories : new String[0]);
+
+        boardService.updatePost(id, boardDto, categoryList);
         return "redirect:/list/{id}";
     }
 

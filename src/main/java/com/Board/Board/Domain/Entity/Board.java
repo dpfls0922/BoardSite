@@ -39,7 +39,7 @@ public class Board {
     @Column(nullable = false)
     private Integer hitcount = 0;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 

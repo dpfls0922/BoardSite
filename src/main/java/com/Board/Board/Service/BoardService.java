@@ -20,7 +20,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -78,7 +77,8 @@ public class BoardService {
                 .createdDate(board.getCreatedDate())
                 .updatedDate(board.getUpdatedDate())
                 .build();
-        boardDto.setSelectedCategories(board.getBoardCategories().stream().map(BoardCategory::getCategory).map(Category::getType).collect(Collectors.toList()));
+        boardDto.setSelectedCategories(board.getBoardCategories().stream()
+                .map(BoardCategory::getCategory).map(Category::getType).collect(Collectors.toList()));
 
         return boardDto;
     }

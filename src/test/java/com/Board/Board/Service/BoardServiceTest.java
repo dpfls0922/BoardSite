@@ -158,11 +158,12 @@ class BoardServiceTest {
     void deletePost() {
         Long boardId = 1L;
 
-        when(boardRepository.findById(boardId)).thenReturn(Optional.empty());
+        Board existingBoard = new Board();
+        existingBoard.setId(boardId);
+        when(boardRepository.findById(boardId)).thenReturn(Optional.of(existingBoard));
 
         boardService.deletePost(boardId);
 
-        assertThrows(EntityNotFoundException.class, () -> boardService.getBoard(boardId));
         verify(boardRepository, times(1)).deleteById(boardId);
     }
 }

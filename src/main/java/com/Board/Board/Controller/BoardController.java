@@ -74,7 +74,7 @@ public class BoardController {
      * @return 게시글 목록 페이지
      */
     @PostMapping("/register")
-    public String register(@RequestParam("categories") String[] categories, BoardDto boardDto){
+    public String register(@RequestParam(name = "categories", required = false) String[] categories, BoardDto boardDto){
         List<String> categoryList = Arrays.asList(categories != null ? categories : new String[0]);
         boardService.savePost(boardDto, checkSession(), categoryList);
         return "redirect:/list";

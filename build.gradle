@@ -31,10 +31,28 @@ dependencies {
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
 
 	// https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-jasper
 	implementation'org.apache.tomcat.embed:tomcat-embed-jasper'
+	// jwt 의존성 추가
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+	// Spring Security 의존성 추가
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// Jakarta Validation API 의존성 추가
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+
+	// Additional Dependencies
+	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+	// MySQL Driver
+	runtimeOnly 'mysql:mysql-connector-java'
 }
 
 tasks.named('bootBuildImage') {
